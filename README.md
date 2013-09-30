@@ -1,0 +1,4 @@
+PGR - Počítačová grafika
+=====
+
+Popis:
