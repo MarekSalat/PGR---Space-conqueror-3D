@@ -8,11 +8,12 @@
 
 
 var GUI = function(){
+    this.init = function(){
+        var gui = new dat.GUI();
+        gui.add({message: ""}, 'message');
+        gui.add({speed: 2.5}, 'speed', -5, 5);
+        gui.add({explode:function(){}}, 'explode');
 
-    var gui = new dat.GUI();
-    gui.add({message: ""}, 'message');
-    gui.add({speed: 2.5}, 'speed', -5, 5);
-    gui.add({explode:function(){}}, 'explode');
-
-    return gui;
-}
+        //return gui;
+    };
+};

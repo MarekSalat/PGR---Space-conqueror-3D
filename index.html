@@ -1,9 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title></title>
+    <title>Space conqueror</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace,monospace;
+            background-color: #f0f0f0;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
 </head>
-<body>
+    <body>
+        <script src="js/libs/three.min.js"></script>
+        <script src="js/libs/TrackballControls.js"></script>
+        <script src="js/libs/Detector.js"></script>
+        <script src="js/libs/stats.min.js"></script>
+        <script src="js/libs/dat.gui.min.js"></script>
+        <script src="js/libs/dat.color.min.js"></script>
 
-</body>
+        <script src="js/util.js"></script>
+        <script src="js/GameModel.js"></script>
+        <script src="js/Asset.js"></script>
+        <script src="js/Level.js"></script>
+        <script src="js/LevelManager.js"></script>
+        <script src="js/Screen.js"></script>
+        <script src="js/Game.js"></script>
+        <script src="js/GUI.js"></script>
+
+        <script>
+
+            var stats, game, gui;
+
+            init();
+            animate();
+
+            function init() {
+                stats = new Stats();
+                stats.domElement.style.position = 'absolute';
+                stats.domElement.style.top = '0px';
+                document.createElement( 'div' );
+                document.body.appendChild( stats.domElement );
+
+                var screen = new TestGame3DScreen();
+                screen.init();
+
+                game = new Game();
+                game.setScreen( screen );
+                game.init();
+
+                gui = new GUI();
+                gui.init();
+            }
+
+            function animate() {
+                requestAnimationFrame( animate );
+
+                game.animate();
+                stats.update();
+            }
+
+        </script>
+
+    </body>
 </html>

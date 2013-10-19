@@ -1,67 +1,26 @@
-var GameModel = GameModel || function (){
+var Game = Game || function (){
 
-};
+    this.nextScreen = null;
+    this.currentScreen = null;
 
-GameModel.Player = function(){
-    this.TYPE_ENUM = {
-        NONE: 0,
-        PLAYER: 1,
-        BOOT: 2
+    this.setScreen = function (screen){
+        this.nextScreen = screen;
+        console.log(screen);
     };
 
-    // @var current type of player
-    this.type = this.TYPE_ENUM.NONE;
+    this.init = function(){
 
-    // @var number of conquered planets
-    this.conqueredPlanets = 0;
+    };
+
+    this._clock = new THREE.Clock(true);
+
+    this.animate = function (){
+        var delta = this._clock.getElapsedTime();
+
+        this.currentScreen = this.nextScreen;
+        if(this.currentScreen == null) return;
+
+        this.currentScreen.update(delta);
+        this.currentScreen.render(delta);
+    };
 };
-
-GameModel.Planet = function(){
-    // @var new ships created per second
-    this.newShipsPerSecond = 13;
-
-    // @var current state
-    this.numberOfShips = 0;
-
-    // @var how many of ships will take off from this planet in percent
-    this.takeoff = 0.5;
-
-    // @var who owns this planet
-    this.owner = new GameModel.Player();
-
-    // @var
-    this.name = "uknown";
-};
-
-GameModel.SpaceShipFleet = function(){
-    // @var flying from planet
-    this.from = new GameModel.Planet();
-    // @var flying to planet
-    this.to   = new GameModel.Planet();
-
-    // @var how many ships this fleet have
-    this.capacity = 1;
-
-    // @var who owns this fleet
-    this.owner = new GameModel.Player();
-};
-
-GameModel.SpaceShip = function(){
-
-};
-
-GameModel.addPlanet = function (planet){;
-    if(!this.planets){
-        this.planets = [];
-    }
-
-    this.push(planet);
-}
-
-
-
-GameModel.Score = function(){
-    this.score = 0;
-};
-
-console.log( new GameModel.Planet().shipsPerSecond);

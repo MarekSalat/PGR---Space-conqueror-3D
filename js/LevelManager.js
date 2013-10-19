@@ -5,3 +5,7 @@
  * Time: 22:09
  * To change this template use File | Settings | File Templates.
  */
+
+var LevelManager = LevelManager || function() {
+
+};
