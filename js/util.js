@@ -34,7 +34,7 @@ function Pool(size, poolable) {
     this.init = function() {
         if(this.lastFree >= this.pool.length) this.size += this.size;
 
-        for (var i = this.lastFree; i < this.pool.length; i++) {
+        for (var i = this.lastFree; i < this.size; i++) {
             var tmp = new this.poolable();
             this.pool[i] = tmp;
         }

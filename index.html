@@ -21,6 +21,7 @@
         <script src="js/libs/dat.gui.min.js"></script>
         <script src="js/libs/dat.color.min.js"></script>
 
+        <script src="js/setting.js"></script>
         <script src="js/util.js"></script>
         <script src="js/GameModel.js"></script>
         <script src="js/Asset.js"></script>
@@ -44,7 +45,7 @@
                 document.createElement( 'div' );
                 document.body.appendChild( stats.domElement );
 
-                var screen = new TestGame3DScreen();
+                var screen = new LevelScreen();
                 screen.init();
 
                 game = new Game();

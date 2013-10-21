@@ -1,10 +1,17 @@
 var Game = Game || function (){
 
-    this.nextScreen = null;
-    this.currentScreen = null;
+    this.screen = null;
+
+    this.levelLoader = null;
+    this.assetLoader = null;
 
     this.setScreen = function (screen){
-        this.nextScreen = screen;
+//        this.screen.pause();
+//        this.screen.dispose();
+//        screen.resume();
+//        screen.update(0);
+
+        this.screen = screen;
         console.log(screen);
     };
 
@@ -17,10 +24,10 @@ var Game = Game || function (){
     this.animate = function (){
         var delta = this._clock.getElapsedTime();
 
-        this.currentScreen = this.nextScreen;
-        if(this.currentScreen == null) return;
+        var screen = this.screen;
+        if(screen == null) return;
 
-        this.currentScreen.update(delta);
-        this.currentScreen.render(delta);
+        screen.update(delta);
+        screen.render(delta);
     };
 };

@@ -46,7 +46,6 @@ Game3DScreen = (function (_super) {
     Game3DScreen.prototype.init = function(){
         _super.prototype.init.call(this);   console.log("Game3DScreen init");
 
-        //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
         // Camera initialization
         this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
         this.camera.position.z = 250;
@@ -85,6 +84,12 @@ Game3DScreen = (function (_super) {
             this.renderer = new THREE.WebGLRenderer();
         else
             this.renderer = new THREE.CanvasRenderer();
+
+        if(typeof this.renderer == 'undefined' || this.renderer == null)
+            if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+        //this.renderer.setClearColor( 0xFFffFF, 1 );
+
         this.renderer.sortObjects = false;
         this.renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -121,40 +126,23 @@ Game3DScreen = (function (_super) {
 })(Screen);
 
 
-var TestGame3DScreen = (function (_super) {
+var LevelScreen = (function (_super) {
     _extends(TestGame3DScreen, _super);
 
     function TestGame3DScreen(name) {
-        _super.call(this, name);    console.log("TestGame3DScreen construct");
+        _super.call(this, name);    console.log("LevelScreen construct");
 
         this.mouse = new THREE.Vector3();
         this.mouse.z = 1;
         this.INTERSECTED = [];
+
+        this.level = new Level(this, game);
     };
 
     TestGame3DScreen.prototype.init = function (){
-        _super.prototype.init.call(this);   console.log("TestGame3DScreen init");
+        _super.prototype.init.call(this);   console.log("LevelScreen init");
 
-        var geometry = new THREE.CubeGeometry( 20, 20, 20 );
-
-        for ( var i = 0; i < 500; i ++ ) {
-
-            var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-
-            object.position.x = Math.random() * 800 - 400;
-            object.position.y = Math.random() * 800 - 400;
-            object.position.z = Math.random() * 800 - 400;
-
-            object.rotation.x = Math.random() * 2 * Math.PI;
-            object.rotation.y = Math.random() * 2 * Math.PI;
-            object.rotation.z = Math.random() * 2 * Math.PI;
-
-            object.scale.x = Math.random() + 0.5;
-            object.scale.y = Math.random() + 0.5;
-            object.scale.z = Math.random() + 0.5;
-
-            this.scene.add( object );
-        }
+        this.level.init();
 
         this.intersects = [];
 
@@ -177,7 +165,9 @@ var TestGame3DScreen = (function (_super) {
     TestGame3DScreen.prototype.onMouseDown = function( event ){
         this.setMouse(event);
 
-        if( this.getIntersectsObjects(this.mouse).length <= 0) return;
+        var intersects = this.getIntersectsObjects(this.mouse)
+        if( intersects.length <= 0) return;
+        if( !this.level.onSelectionStart(intersects) ) return;
 
         this.controls.noRotate = true;
 
@@ -196,16 +186,7 @@ var TestGame3DScreen = (function (_super) {
 
         var intersects = this.getIntersectsObjects(this.mouse);
 
-        for(var i in intersects){
-            var obj = intersects[i].object;
-
-            if(this.INTERSECTED.indexOf(obj) >= 0) continue;
-
-            obj.currentHex = obj.material.emissive.getHex();
-            obj.material.emissive.setHex( 0xff0000 );
-
-            this.INTERSECTED.push(obj);
-        }
+        this.level.onObjectSelected(intersects);
     };
 
     TestGame3DScreen.prototype.setMouse = function(event){
@@ -221,17 +202,15 @@ var TestGame3DScreen = (function (_super) {
         document.removeEventListener('mousemove', this.mouseMoveSelectingListener);
         document.removeEventListener('mouseup', this.mouseUpListener);
 
+        this.level.onSelectionFinish();
+
         this.state = 'looking';
         console.log(this.state);
-
-        for(var i in this.INTERSECTED){
-            this.INTERSECTED[i].material.emissive.setHex( this.INTERSECTED[i].currentHex );
-        }
-        this.INTERSECTED = [];
     };
 
     TestGame3DScreen.prototype.update = function (delta){
         _super.prototype.update.call(this, delta);
+        this.level.update(delta);
     };
 
     TestGame3DScreen.prototype.render = function (delta){

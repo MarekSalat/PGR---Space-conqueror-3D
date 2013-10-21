@@ -9,10 +9,16 @@
 var GameModel = GameModel || function (){
     this.planets = [];
 
-
     this.init = function(){
         this.fleetsPool = new Pool(128, GameModel.SpaceShipFleet);
         this.fleetsPool.init();
+    };
+
+    this.createAndAddPlanet = function (){
+        var newPlanet = new GameModel.Planet();
+        this.planets.push(newPlanet);
+
+        return newPlanet;
     };
 
     this.sendFleets = function(from, to, flyTimeInMillis){
@@ -32,7 +38,8 @@ var GameModel = GameModel || function (){
 
     this.updateFleets = function(delta){
         for(var i = 0; i < this.fleetsPool.lastFree; i++){
-            var fleet = this.fleets[i];
+            var fleet = this.fleetsPool[i];
+            if(typeof fleet == 'undefined') {console.log('shit ' + fleet ); this.fleetsPool.lastFree--; return; }
             fleet.update(delta);
 
             if(fleet.timeToArrive <= 0){
@@ -43,19 +50,22 @@ var GameModel = GameModel || function (){
 };
 
 GameModel.Player = function(){
-    this.TYPE_ENUM = {
-        NONE: 0,
-        PLAYER: 1,
-        BOOT: 2
-    };
-
     // @var current type of player
     this.type = this.TYPE_ENUM.NONE;
 
     // @var number of conquered planets, number of planets player currently have
     this.conqueredPlanets = 0;
 };
+GameModel.Player.prototype.TYPE_ENUM = {
+    NONE: 0,
+    PLAYER: 1,
+    BOOT: 2
+};
+
 GameModel.NeutralOwner = new GameModel.Player();
+
+GameModel.RealPlayer = new GameModel.Player();
+GameModel.RealPlayer.type = GameModel.Player.prototype.TYPE_ENUM.PLAYER;
 
 GameModel.Planet = function(){
     // @var new ships created per second
@@ -92,6 +102,7 @@ GameModel.Planet = function(){
             fleet.owner = this.owner;
             fleet.capacity = fleetCapacity;
             fleet.timeToArrive = flyTimeInMillis;
+            //console
             fleet.timeToStart = Math.random()/10; // 0-10 ms
         }
 
@@ -135,6 +146,8 @@ GameModel.Planet = function(){
     };
 
     this.update = function(delta){
+        if(this.owner == GameModel.NeutralOwner) return;
+
         this.amountOfShips += (delta/1000)*this.newShipsPerSecond;
     };
 };
@@ -146,7 +159,7 @@ GameModel.NeutralPlanet = (function (_super) {
         this.constructor.super.call(this);
 
         this.amountOfShips = numberOfShips || 10;
-        this.newShipsPerSecond = 0;
+        this.owner = GameModel.NeutralOwner;
     };
     extend(_this, _super);
 
@@ -155,7 +168,6 @@ GameModel.NeutralPlanet = (function (_super) {
 
 /* [poolable] */
 GameModel.SpaceShipFleet = function(){
-    this.init();
 
     this.init = function(){
         // @var flying from planet
@@ -174,6 +186,7 @@ GameModel.SpaceShipFleet = function(){
 
         this.timeToStart = 0;
     };
+    this.init();
 
     this.update = function (delta){
 
