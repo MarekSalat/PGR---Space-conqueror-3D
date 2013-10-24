@@ -86,7 +86,7 @@ GameModel.Planet = function(){
     // @var
     this.name = "unknown";
 
-    //@fixme: fleet by asi melo byt array a to by se melo i vracet
+    //@fixme: fleet by asi melo byt array a to by se melo i vracet, jake flotyly se odeslaly
     this.sendFleets = function(destination, flyTimeInMillis, fleet){
         var numberOfShips = Math.ceil(this.amountOfShips * this.takeoffInPercent);
         if( (this.amountOfShips - numberOfShips) < 1 || numberOfShips < 0) return 0;
