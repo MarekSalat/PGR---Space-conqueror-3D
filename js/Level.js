@@ -142,6 +142,6 @@ var Level = Level || function(screen, game) {
         var bidx = this.planets.indexOf(planetB);
         if(aidx < 0 || bidx < 0) return Infinity;
 
-        this.planets[aidx].position.distanceToSquared(this.planets[bidx].position);
+        return this.planets[aidx].position.distanceToSquared(this.planets[bidx].position);
     };
 };

@@ -8,10 +8,9 @@
 
 var GameModel = GameModel || function (){
     this.planets = [];
+    this.fleets = [];
 
     this.init = function(){
-        this.fleetsPool = new Pool(128, GameModel.SpaceShipFleet);
-        this.fleetsPool.init();
     };
 
     this.createAndAddPlanet = function (){
@@ -22,7 +21,9 @@ var GameModel = GameModel || function (){
     };
 
     this.sendFleets = function(from, to, flyTimeInMillis){
-        return from.sendFleets(to, flyTimeInMillis, this.fleetsPool);
+        var fleet = new GameModel.SpaceShipFleet();
+        this.fleets.push(fleet);
+        return from.sendFleets(to, flyTimeInMillis, fleet);
     };
 
     this.update = function (delta){
@@ -37,13 +38,12 @@ var GameModel = GameModel || function (){
     };
 
     this.updateFleets = function(delta){
-        for(var i = 0; i < this.fleetsPool.lastFree; i++){
-            var fleet = this.fleetsPool[i];
-            if(typeof fleet == 'undefined') {console.log('shit ' + fleet ); this.fleetsPool.lastFree--; return; }
+        for(var i in this.fleets){
+            var fleet = this.fleets[i];
             fleet.update(delta);
 
             if(fleet.timeToArrive <= 0){
-                this.fleetsPool.free(fleet);
+                this.fleets.unshift(fleet);
             }
         }
     };
@@ -86,7 +86,8 @@ GameModel.Planet = function(){
     // @var
     this.name = "unknown";
 
-    this.sendFleets = function(destination, flyTimeInMillis, fleetsPool){
+    //@fixme: fleet by asi melo byt array a to by se melo i vracet
+    this.sendFleets = function(destination, flyTimeInMillis, fleet){
         var numberOfShips = Math.ceil(this.amountOfShips * this.takeoffInPercent);
         if( (this.amountOfShips - numberOfShips) < 1 || numberOfShips < 0) return 0;
 
@@ -95,14 +96,11 @@ GameModel.Planet = function(){
         for(var i = numberOfShips; i > 0; i -= this.fleetCapacity){
             var fleetCapacity = (i >= this.fleetCapacity) ? this.fleetCapacity : i;
 
-            var fleet = fleetsPool.get();
-
             fleet.from = this;
             fleet.destination = destination;
             fleet.owner = this.owner;
             fleet.capacity = fleetCapacity;
             fleet.timeToArrive = flyTimeInMillis;
-            //console
             fleet.timeToStart = Math.random()/10; // 0-10 ms
         }
 
