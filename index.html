@@ -33,7 +33,7 @@
 
         <script>
 
-            var stats, game, gui;
+            var stats, _game, gui;
 
             init();
             animate();
@@ -46,11 +46,10 @@
                 document.body.appendChild( stats.domElement );
 
                 var screen = new LevelScreen();
-                screen.init();
 
-                game = new Game();
-                game.setScreen( screen );
-                game.init();
+                _game = new Game();
+                _game.setScreen( screen );
+                _game.init();
 
                 gui = new GUI();
                 gui.init();
@@ -59,7 +58,7 @@
             function animate() {
                 requestAnimationFrame( animate );
 
-                game.animate();
+                _game.animate();
                 stats.update();
             }
 
