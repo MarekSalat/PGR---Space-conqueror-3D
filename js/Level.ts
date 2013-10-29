@@ -77,7 +77,7 @@ class Level {
 
             if(fleet.timeToArrive <= 0) {
                 this.screen.scene.remove(this.fleets[i]);
-                delete this.fleets[i];
+                this.fleets.splice(i, 1);
                 continue;
             }
             this.src.copy(this.fleets[i].srcPositon);
@@ -111,7 +111,7 @@ class Level {
     }
 
     onSelectionStart(intersectsArray){
-        if (intersectsArray[0].object.planet.owner == this.player)
+        if ('planet' in intersectsArray[0].object && intersectsArray[0].object.planet.owner == this.player)
             return true;
         return false;
     }
@@ -125,7 +125,7 @@ class Level {
 
         for(var i in intersectsArray){
             var obj = intersectsArray[i].object;
-            if(obj.hasOwnProperty('planet')){
+            if('planet' in obj){
                 this.onPlanedSelected(obj);
             }
         }
@@ -142,6 +142,7 @@ class Level {
         }
         else{
             this.selectedPlanets.push(planetRep);
+            console.log('Plane ' + planetRep.planet + ' with ' + planetRep.planet.amountOfShips + ' ships');
         }
 
     }
@@ -171,8 +172,6 @@ class Level {
                     fleet.srcPositon.y += Math.random()*r - d;
                     fleet.srcPositon.z += Math.random()*r - d;
 
-                    //fleet.position.copy(fleet.srcPositon);
-
                     fleet.fleet = fleets[f];
                     this.screen.scene.add(fleet);
                     this.fleets.push(fleet);
@@ -181,6 +180,8 @@ class Level {
         }
         this.selectedTargetPlanet = null;
         this.selectedPlanets = [];
+
+        console.log(fleets);
     }
 
     private fleetGeometry = null;
