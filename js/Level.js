@@ -98,7 +98,7 @@ var Level = (function () {
 
     Level.prototype.onObjectSelected = function (intersectsArray) {
         if (intersectsArray.length == 0) {
-            if (this.selectedTargetPlanet != null)
+            if (this.selectedTargetPlanet !== null)
                 this.planetUnselected(this.selectedTargetPlanet);
             this.selectedTargetPlanet = null;
             return;
@@ -107,19 +107,19 @@ var Level = (function () {
         for (var i in intersectsArray) {
             var obj = intersectsArray[i].object;
             if ('planet' in obj) {
-                this.onPlanedSelected(obj);
+                this.onPlanetSelected(obj);
             }
         }
     };
 
-    Level.prototype.onPlanedSelected = function (planetRep) {
-        if (this.selectedPlanets.indexOf(planetRep) >= 0 || this.selectedTargetPlanet == planetRep)
+    Level.prototype.onPlanetSelected = function (planetRep) {
+        if (this.selectedTargetPlanet === planetRep || this.selectedPlanets.indexOf(planetRep) >= 0)
             return;
 
         this.planetSelected(planetRep);
 
         if (planetRep.planet.owner != this.player) {
-            if (this.selectedTargetPlanet != null)
+            if (this.selectedTargetPlanet != null && this.selectedTargetPlanet.planet.owner != this.player)
                 this.planetUnselected(this.selectedTargetPlanet);
             this.selectedTargetPlanet = planetRep;
         } else {
@@ -128,40 +128,56 @@ var Level = (function () {
         }
     };
 
-    Level.prototype.onSelectionFinish = function () {
-        for (var i in this.selectedPlanets) {
-            this.planetUnselected(this.selectedPlanets[i]);
+    Level.prototype.onSelectionFinish = function (intersectsArray) {
+        console.log("onSelectionFinish intersectsArray.lenght = " + intersectsArray.length + ' target ' + this.selectedTargetPlanet);
+        if (this.selectedTargetPlanet == null && intersectsArray.length > 0) {
+            var target = intersectsArray[intersectsArray.length - 1].object;
+            if ("planet" in target)
+                this.selectedTargetPlanet = target;
         }
+
         if (this.selectedTargetPlanet != null) {
+            this.sendFleets(this.selectedPlanets, this.selectedTargetPlanet);
             this.planetUnselected(this.selectedTargetPlanet);
-
-            for (var i in this.selectedPlanets) {
-                var from = this.selectedPlanets[i];
-                var to = this.selectedTargetPlanet;
-                var time = this.getDistance(from, to) * 5;
-
-                var fleets = this.model.sendFleets(from.planet, to.planet, time);
-                for (var f in fleets) {
-                    var fleet = this.createFleet();
-
-                    fleet.dstPositon = to.position;
-                    fleet.srcPositon = from.position.clone();
-                    var r = from.geometry.radius / 4;
-                    var d = from.geometry.radius / 2;
-                    fleet.srcPositon.x += Math.random() * r - d;
-                    fleet.srcPositon.y += Math.random() * r - d;
-                    fleet.srcPositon.z += Math.random() * r - d;
-
-                    fleet.fleet = fleets[f];
-                    this.screen.scene.add(fleet);
-                    this.fleets.push(fleet);
-                }
-            }
         }
+
+        for (var i in this.selectedPlanets) {
+            var from = this.selectedPlanets[i];
+            if (from === this.selectedTargetPlanet)
+                continue;
+            this.planetUnselected(from);
+        }
+
         this.selectedTargetPlanet = null;
         this.selectedPlanets = [];
+    };
 
-        console.log(fleets);
+    Level.prototype.sendFleets = function (fromPlanets, toPlanet) {
+        for (var i in fromPlanets) {
+            var from = fromPlanets[i];
+            var to = toPlanet;
+            if (from === to)
+                continue;
+
+            var time = this.getDistance(from, to) * 5;
+
+            var fleets = this.model.sendFleets(from.planet, to.planet, time);
+            for (var f in fleets) {
+                var fleet = this.createFleet();
+
+                fleet.dstPositon = to.position;
+                fleet.srcPositon = from.position.clone();
+                var r = from.geometry.radius / 4;
+                var d = from.geometry.radius / 2;
+                fleet.srcPositon.x += Math.random() * r - d;
+                fleet.srcPositon.y += Math.random() * r - d;
+                fleet.srcPositon.z += Math.random() * r - d;
+
+                fleet.fleet = fleets[f];
+                this.screen.scene.add(fleet);
+                this.fleets.push(fleet);
+            }
+        }
     };
 
     Level.prototype.createFleet = function () {

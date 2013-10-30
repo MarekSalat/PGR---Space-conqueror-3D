@@ -245,7 +245,9 @@ class LevelScreen extends Game3DScreen{
         document.removeEventListener('mousemove', this.mouseMoveSelectingListener);
         document.removeEventListener('mouseup', this.mouseUpListener);
 
-        this.level.onSelectionFinish();
+        this.setMouse(event);
+        var intersects = this.getIntersectsObjects(this.mouse);
+        this.level.onSelectionFinish(intersects);
 
         this.state = 'looking';
         console.log(this.state);

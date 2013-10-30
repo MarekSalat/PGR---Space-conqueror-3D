@@ -118,7 +118,8 @@ class Level {
 
     onObjectSelected(intersectsArray){
         if(intersectsArray.length == 0 ){
-            if(this.selectedTargetPlanet != null) this.planetUnselected(this.selectedTargetPlanet);
+            if(this.selectedTargetPlanet !== null )
+                this.planetUnselected(this.selectedTargetPlanet);
             this.selectedTargetPlanet = null;
             return;
         }
@@ -126,18 +127,19 @@ class Level {
         for(var i in intersectsArray){
             var obj = intersectsArray[i].object;
             if('planet' in obj){
-                this.onPlanedSelected(obj);
+                this.onPlanetSelected(obj);
             }
         }
     }
 
-    onPlanedSelected(planetRep) {
-        if(this.selectedPlanets.indexOf(planetRep) >= 0 || this.selectedTargetPlanet == planetRep) return;
+    onPlanetSelected(planetRep) {
+        if(this.selectedTargetPlanet === planetRep || this.selectedPlanets.indexOf(planetRep) >= 0) return;
 
         this.planetSelected(planetRep);
 
         if (planetRep.planet.owner != this.player ){
-            if(this.selectedTargetPlanet != null) this.planetUnselected(this.selectedTargetPlanet);
+            if(this.selectedTargetPlanet != null && this.selectedTargetPlanet.planet.owner != this.player)
+                this.planetUnselected(this.selectedTargetPlanet);
             this.selectedTargetPlanet = planetRep;
         }
         else{
@@ -147,41 +149,55 @@ class Level {
 
     }
 
-    onSelectionFinish(){
-        for(var i in this.selectedPlanets){
-            this.planetUnselected( this.selectedPlanets[i] );
+    onSelectionFinish(intersectsArray){
+        console.log("onSelectionFinish intersectsArray.lenght = " + intersectsArray.length + ' target ' + this.selectedTargetPlanet);
+        if(this.selectedTargetPlanet == null && intersectsArray.length > 0){
+            var target:any = intersectsArray[intersectsArray.length-1].object;
+            if("planet" in target)
+                this.selectedTargetPlanet = target;
         }
+
         if(this.selectedTargetPlanet != null){
+            this.sendFleets(this.selectedPlanets, this.selectedTargetPlanet);
             this.planetUnselected(this.selectedTargetPlanet);
-
-            // create fleet and send it
-            for(var i in this.selectedPlanets){
-                var from = this.selectedPlanets[i];
-                var to = this.selectedTargetPlanet;
-                var time = this.getDistance(from, to)*5;
-
-                var fleets = this.model.sendFleets(from.planet, to.planet, time);
-                for(var f in fleets){
-                    var fleet = this.createFleet();
-
-                    fleet.dstPositon = to.position;
-                    fleet.srcPositon = from.position.clone();
-                    var r = from.geometry.radius / 4;
-                    var d = from.geometry.radius / 2;
-                    fleet.srcPositon.x += Math.random()*r - d;
-                    fleet.srcPositon.y += Math.random()*r - d;
-                    fleet.srcPositon.z += Math.random()*r - d;
-
-                    fleet.fleet = fleets[f];
-                    this.screen.scene.add(fleet);
-                    this.fleets.push(fleet);
-                }
-            }
         }
+
+        for(var i in this.selectedPlanets){
+            var from:any = this.selectedPlanets[i];
+            if(from === this.selectedTargetPlanet ) continue;
+            this.planetUnselected(from);
+        }
+
         this.selectedTargetPlanet = null;
         this.selectedPlanets = [];
+    }
 
-        console.log(fleets);
+    sendFleets(fromPlanets: Array, toPlanet:any){
+        // create fleet and send it
+        for(var i in fromPlanets){
+            var from:any = fromPlanets[i];
+            var to:any = toPlanet;
+            if(from === to ) continue;
+
+            var time = this.getDistance(from, to)*5;
+
+            var fleets = this.model.sendFleets(from.planet, to.planet, time);
+            for(var f in fleets){
+                var fleet = this.createFleet();
+
+                fleet.dstPositon = to.position;
+                fleet.srcPositon = from.position.clone();
+                var r = from.geometry.radius / 4;
+                var d = from.geometry.radius / 2;
+                fleet.srcPositon.x += Math.random()*r - d;
+                fleet.srcPositon.y += Math.random()*r - d;
+                fleet.srcPositon.z += Math.random()*r - d;
+
+                fleet.fleet = fleets[f];
+                this.screen.scene.add(fleet);
+                this.fleets.push(fleet);
+            }
+        }
     }
 
     private fleetGeometry = null;

@@ -224,7 +224,7 @@ else
         };
 
         Planet.prototype.update = function (delta) {
-            if (typeof this.owner == "NeutralOwner")
+            if (this.owner === Factories.getNeutralOwner())
                 return;
 
             this.amountOfShips += (delta / 1000) * this.newShipsPerSecond;

@@ -204,7 +204,7 @@ module GameModel {
         }
 
         update (delta){
-            if(typeof this.owner ==  "NeutralOwner") return;
+            if(this.owner === Factories.getNeutralOwner()) return;
 
             this.amountOfShips += (delta/1000)*this.newShipsPerSecond;
             if(this.amountOfShips > this.maximumAmountOfShips) this.amountOfShips = this.maximumAmountOfShips;

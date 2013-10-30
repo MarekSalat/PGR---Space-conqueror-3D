@@ -28,7 +28,7 @@ class Game {
     animate(){
         if(this.clock == null)
            this.clock = new THREE.Clock(true);
-        var delta = this.clock.getElapsedTime();
+        var delta = this.clock.getDelta() * 1000;
 
         if(!this.hasScreen()) return;
         var screen = this.screen;
