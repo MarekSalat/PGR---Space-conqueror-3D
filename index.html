@@ -30,9 +30,9 @@
         <script src="js/Screen.js"></script>
         <script src="js/Game.js"></script>
         <script src="js/GUI.js"></script>
+        <script src="js/AI.js"></script>
 
         <script>
-
             var stats, _game, gui;
 
             init();
@@ -53,6 +53,9 @@
 
                 gui = new GUI();
                 gui.init();
+
+                // start thread with AI
+                _game.screen.level.AIRun();
             }
 
             function animate() {
