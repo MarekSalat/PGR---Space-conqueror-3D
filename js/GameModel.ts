@@ -5,6 +5,7 @@
  * Time: 19:41
  * To change this template use File | Settings | File Templates.
  */
+/// <reference path="AI.ts" />
 module GameModel {
 
     export class Factories {
@@ -104,6 +105,14 @@ module GameModel {
 
         // @var number of conquered planets, number of planets player currently have
         conqueredPlanets = 0;
+
+        constructor(){}
+    };
+
+    export class AIPlayer extends Player {
+
+        // @var current type of player
+        type = PlayerType.BOOT;
     };
 
     export class NeutralOwner extends Player {
@@ -126,7 +135,7 @@ module GameModel {
         newShipsPerSecond = 30;
 
         // @var current state
-        amountOfShips = 0;
+        amountOfShips = 10;
 
         // @var how many of ships will take off on one move from this planet in hold
         takeoffInPercent = 0.5;
@@ -141,6 +150,7 @@ module GameModel {
         name = "unknown";
 
         sendFleets(destination: Planet, flyTimeInMillis:number ){
+
             var numberOfShips = Math.ceil(this.amountOfShips * this.takeoffInPercent);
             if( (this.amountOfShips - numberOfShips) < 1 || numberOfShips < 0) return [];
 

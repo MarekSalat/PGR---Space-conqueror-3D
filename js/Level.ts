@@ -21,7 +21,12 @@ class Level {
     fleets = [];
 
     player = new GameModel.Player();
-    competitor = new GameModel.Player();
+    competitor = new GameModel.AIPlayer();
+
+    AIThread = null;
+    AISleeperThread = null;
+    public AIEventListener;
+    public AISleeperEventListener;
 
     constructor(public screen: any, gamel: GameModel.Model){
         this.model = new GameModel.Model();
@@ -29,6 +34,7 @@ class Level {
 
     init (){
         this.model.init();
+        this.initWorkers();
 
         //var geometry = new THREE.CubeGeometry( 60, 60, 60 );
 
@@ -220,4 +226,126 @@ class Level {
 
         return this.planets[aidx].position.distanceTo(this.planets[bidx].position);
     }
+
+    getPlanetById(id) {
+        for (var i = 0, l = this.planets.length; i < l; i++) {
+            if (id == this.planets[i].id) {
+                return this.planets[i];
+            }
+        }
+        return null;
+    }
+
+    /*///////////////////////////////////////////////////////////////////////*/
+    /* AI threads */
+    /*///////////////////////////////////////////////////////////////////////*/
+
+    initWorkers() {
+        var AIworker = new Worker('js/AIWorker.js');
+        this.AIThread = AIworker;
+        var AISleeperWorker = new Worker('js/AISleeperWorker.js');
+        this.AISleeperThread = AISleeperWorker;
+
+
+        this.AIEventListener = (function(__this){
+            return function(event) {__this.AIEventHandler(event)};
+        })(this);
+        this.AISleeperEventListener = (function(__this){
+            return function(event) {__this.AISleeperEventHandler(event)};
+        })(this);
+
+        this.AIThread.onmessage = this.AIEventListener;
+        this.AISleeperThread.onmessage = this.AISleeperEventListener;
+    }
+
+    AIEventHandler(e) {
+        if (!(e.data instanceof Object) ||
+            !('sourcePlanetIds' in e.data) ||
+            !('targetPlanetId' in e.data))
+        {
+            // something what isn't Move has come
+            // console.log(e.data);
+
+            this.AIThread.terminate();
+            this.AISleeperThread.terminate();
+            return;
+        }
+
+        //console.log("Move has come from AIWorker");
+
+        var sourcePlanetIds = e.data.sourcePlanetIds;
+        var sourcePlanet = null;
+        var targetPlanet = this.getPlanetById(e.data.targetPlanetId);
+
+        for (var i = 0, l = sourcePlanetIds.length; i < l; i++) {
+            sourcePlanet = this.getPlanetById(sourcePlanetIds[i]);
+
+            // TODO: shouldn't be "fleet creation" in level methods?
+            // create fleet and send it
+            var from = sourcePlanet;
+            var to = targetPlanet;
+            var time = this.getDistance(from, to)*5;
+
+            var fleets = this.model.sendFleets(from.planet, to.planet, time);
+            for(var f in fleets){
+                var fleet = this.createFleet();
+
+                fleet.dstPositon = to.position;
+                fleet.srcPositon = from.position.clone();
+                var r = from.geometry.radius / 4;
+                var d = from.geometry.radius / 2;
+                fleet.srcPositon.x += Math.random()*r - d;
+                fleet.srcPositon.y += Math.random()*r - d;
+                fleet.srcPositon.z += Math.random()*r - d;
+
+                //fleet.position.copy(fleet.srcPositon);
+
+                fleet.fleet = fleets[f];
+                this.screen.scene.add(fleet);
+                this.fleets.push(fleet);
+            }
+
+        }
+
+        // TODO: mayby AI should calculate sleeping time
+        // TODO: also game difficulty parameter should manipulate with AI sleeping time
+        this.AISleeperRun(1500); // ms
+    }
+
+    AISleeperEventHandler(e) {
+        // console.log(e.data);
+        this.AIRun();
+    }
+
+    AIRun() {
+
+        var planets = [];
+
+        for (var i in this.planets) {
+
+            var planet = {};
+            planet['position'] = this.planets[i].position;
+            planet['id'] = this.planets[i].id;
+            planet['planet'] = {};
+            planet['planet']['amountOfShips'] = this.planets[i].planet.amountOfShips;
+            planet['planet']['owner'] = this.planets[i].planet.owner;
+
+            planets.push(planet);
+        }
+
+        var message = {
+            'planets': planets,
+            'player': this.competitor};
+
+        // console.log(message);
+
+        this.AIThread.postMessage(message);
+    }
+
+    AISleeperRun(sleepTime: Number) {
+        var message = {'sleepTime': sleepTime};
+        this.AISleeperThread.postMessage(message);
+    }
+
+
 };
