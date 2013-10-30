@@ -85,7 +85,7 @@ module GameModel {
                 fleet.update(delta);
 
                 if(fleet.timeToArrive <= 0){
-                    delete this.fleets[i];
+                    this.fleets.splice(i, 1);
                 }
             }
         }
@@ -136,6 +136,8 @@ module GameModel {
 
         // @var current state
         amountOfShips = 10;
+
+        maximumAmountOfShips = 500;
 
         // @var how many of ships will take off on one move from this planet in hold
         takeoffInPercent = 0.5;
@@ -215,6 +217,7 @@ module GameModel {
             if(typeof this.owner ==  "NeutralOwner") return;
 
             this.amountOfShips += (delta/1000)*this.newShipsPerSecond;
+            if(this.amountOfShips > this.maximumAmountOfShips) this.amountOfShips = this.maximumAmountOfShips;
         }
     };
 

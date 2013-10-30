@@ -1,5 +1,6 @@
-/// <reference path="libs/three.d.ts" />
 /// <reference path="GameModel.ts" />
+
+declare var THREE;
 
 class Game {
     levelLoader = null;
