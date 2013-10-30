@@ -7,25 +7,29 @@
  */
 
 importScripts('AI.js');
+importScripts('AIWrapper.js');
 
 var ai = new AI();
+var sleepResponseMessage = new SleepResponseMessage();
+var moveResponseMessage = new MoveResponseMessage();
 
 onmessage = function(e) {
-    var planets = null;
-    var player = null;
 
-    planets = e.data.planets;
-    player = e.data.player;
-
-    //postMessage(player);
-    //postMessage(planets);
-
-
-    ai.init(player, planets);
-
-    // postMessage("AI init success");
-
-    postMessage(ai.getAIMove());
+    if (e.data instanceof Object && e.data.hasOwnProperty("type")) {
+        if (e.data.type == MessageType.SLEEP_REQUEST) {
+            setTimeout(function() {
+                postMessage(sleepResponseMessage);
+            }, e.data.sleepTime);
+        }
+        else if (e.data.type == MessageType.MOVE_REQUEST) {
+            ai.init(e.data.player, e.data.planets);
+            moveResponseMessage.move = ai.getAIMove();
+            postMessage(moveResponseMessage);
+        }
+    }
+    else {
+        postMessage("Not supported message has come");
+    }
 }
 
 

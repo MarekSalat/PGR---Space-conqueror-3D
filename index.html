@@ -30,6 +30,7 @@
         <script src="js/Screen.js"></script>
         <script src="js/Game.js"></script>
         <script src="js/GUI.js"></script>
+        <script src="js/AIWrapper.js"></script>
         <script src="js/AI.js"></script>
 
         <script>
@@ -54,8 +55,8 @@
                 gui = new GUI();
                 gui.init();
 
-                // start thread with AI
-                _game.screen.level.AIRun();
+                // start AI brain
+                _game.screen.aiWrapper.AIRun();
             }
 
             function animate() {

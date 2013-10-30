@@ -159,12 +159,16 @@ var LevelScreen = (function (_super) {
         this.mouse.z = 1;
 
         this.level = new Level(this, _game);
+
+        this.aiWrapper = new AIWrapper(this, AIDifficultyType.MEDIUM);
     }
     LevelScreen.prototype.init = function () {
         _super.prototype.init.call(this);
         console.log("LevelScreen init");
 
         this.level.init();
+
+        this.aiWrapper.init();
 
         this.intersects = [];
 
