@@ -1,5 +1,3 @@
-/// <reference path="libs/three.d.ts" />
-/// <reference path="GameModel.ts" />
 var Game = (function () {
     function Game() {
         this.levelLoader = null;

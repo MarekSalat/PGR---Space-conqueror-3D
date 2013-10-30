@@ -282,7 +282,7 @@ var Level = (function () {
 
         // TODO: mayby AI should calculate sleeping time
         // TODO: also game difficulty parameter should manipulate with AI sleeping time
-        this.AISleeperRun(1500);
+        this.AISleeperRun(3000);
     };
 
     Level.prototype.AISleeperEventHandler = function (e) {
@@ -310,6 +310,11 @@ var Level = (function () {
         };
 
         // console.log(message);
+        /*
+        var ai = new AI();
+        ai.init(this.competitor, planets);
+        console.log(ai.getAIMove());
+        */
         this.AIThread.postMessage(message);
     };
 

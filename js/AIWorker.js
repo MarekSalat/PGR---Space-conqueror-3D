@@ -8,6 +8,8 @@
 
 importScripts('AI.js');
 
+var ai = new AI();
+
 onmessage = function(e) {
     var planets = null;
     var player = null;
@@ -18,17 +20,12 @@ onmessage = function(e) {
     //postMessage(player);
     //postMessage(planets);
 
-    var ai = new AI(player);
-    ai.initPlanets(planets);
 
-    //postMessage("AI init success");
+    ai.init(player, planets);
 
-    postMessage(ai.calculateBestMove());
+    // postMessage("AI init success");
 
-    delete ai.player;
-    delete ai.AIPlanets;
-    delete ai.otherPlanets;
-    delete ai;
+    postMessage(ai.getAIMove());
 }
 
 

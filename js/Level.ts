@@ -310,7 +310,7 @@ class Level {
 
         // TODO: mayby AI should calculate sleeping time
         // TODO: also game difficulty parameter should manipulate with AI sleeping time
-        this.AISleeperRun(1500); // ms
+        this.AISleeperRun(3000); // ms
     }
 
     AISleeperEventHandler(e) {
@@ -339,6 +339,12 @@ class Level {
             'player': this.competitor};
 
         // console.log(message);
+
+        /*
+        var ai = new AI();
+        ai.init(this.competitor, planets);
+        console.log(ai.getAIMove());
+        */
 
         this.AIThread.postMessage(message);
     }

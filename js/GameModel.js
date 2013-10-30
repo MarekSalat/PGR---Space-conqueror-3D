@@ -11,6 +11,7 @@ var __extends = this.__extends || function (d, b) {
 * Time: 19:41
 * To change this template use File | Settings | File Templates.
 */
+/// <reference path="AI.ts" />
 var GameModel;
 (function (GameModel) {
     var Factories = (function () {
@@ -127,6 +128,18 @@ var GameModel;
     GameModel.Player = Player;
     ;
 
+    var AIPlayer = (function (_super) {
+        __extends(AIPlayer, _super);
+        function AIPlayer() {
+            _super.apply(this, arguments);
+            // @var current type of player
+            this.type = PlayerType.BOOT;
+        }
+        return AIPlayer;
+    })(Player);
+    GameModel.AIPlayer = AIPlayer;
+    ;
+
     var NeutralOwner = (function (_super) {
         __extends(NeutralOwner, _super);
         function NeutralOwner() {
@@ -152,7 +165,7 @@ var GameModel;
             // @var new ships created per second
             this.newShipsPerSecond = 30;
             // @var current state
-            this.amountOfShips = 0;
+            this.amountOfShips = 10;
             this.maximumAmountOfShips = 500;
             // @var how many of ships will take off on one move from this planet in hold
             this.takeoffInPercent = 0.5;
