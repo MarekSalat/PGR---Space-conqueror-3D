@@ -13,6 +13,12 @@ class Move {
     targetPlanetId = null;
 }
 
+enum AIDifficultyType {
+    EASY = 5000,
+    MEDIUM = 3500,
+    HARD = 2000
+}
+
 enum AIStateType {
     INIT,
     DEFEND,
@@ -56,18 +62,15 @@ class AI {
     }
 
     private updateState() {
-        // are some fleets attacking me?
+        // if are some fleets attacking me?
 
-        // is valuable to defend?
-        //this.state = AIStateType.DEFEND;
-        //return;
+        // ---- if is valuable to defend?
+        // ---- ---- this.state = AIStateType.DEFEND;
+        // ---- ---- return;
 
-        // else
-
-        // else
-        // has human more resources?
-        //this.state = AIStateType.CUT_OFF_HUMAN;
-        //return
+        // if has human more resources?
+        // ---- this.state = AIStateType.CUT_OFF_HUMAN;
+        // ---- return
 
         this.state = AIStateType.ATTACK_RANDOM;
         return;
@@ -102,12 +105,14 @@ class AI {
 
     getRandomMove() {
         for (var i in this.AIPlanets) {
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.3) { // 33.3% chance that planet will be give into soucePlanets
                 this.move.sourcePlanetIds.push(this.AIPlanets[i].id);
             }
         }
+        if (this.move.sourcePlanetIds.length == 0) {
+            this.move.sourcePlanetIds.push(this.AIPlanets[0].id);
+        }
         this.move.targetPlanetId = this.otherPlanets[Math.floor(Math.random()*this.otherPlanets.length)].id;
-        //this.move.targetPlanetId = this.otherPlanets[0].id;
 
         return this.move
     }

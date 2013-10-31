@@ -9,6 +9,8 @@
 /// <reference path="Setting.ts" />
 /// <reference path="GameModel.ts" />
 /// <reference path="Level.ts" />
+/// <reference path="AIWrapper.ts" />
+/// <reference path="AI.ts" />
 declare var THREE;
 declare var Detector;
 declare var _game;
@@ -201,6 +203,8 @@ class LevelScreen extends Game3DScreen{
     public mouseMoveSelectingListener;
     public mouseUpListener;
 
+    public aiWrapper;
+
 
     constructor() {
         super();    console.log("LevelScreen construct");
@@ -209,12 +213,16 @@ class LevelScreen extends Game3DScreen{
         this.mouse.z = 1;
 
         this.level = new Level(this, _game);
+
+        this.aiWrapper = new AIWrapper(this, AIDifficultyType.MEDIUM); // TODO: game difficulty parameter
     }
 
     init(){
         super.init();   console.log("LevelScreen init");
 
         this.level.init();
+
+        this.aiWrapper.init();
 
         this.intersects = [];
 

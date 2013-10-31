@@ -14,6 +14,13 @@ var Move = (function () {
     return Move;
 })();
 
+var AIDifficultyType;
+(function (AIDifficultyType) {
+    AIDifficultyType[AIDifficultyType["EASY"] = 5000] = "EASY";
+    AIDifficultyType[AIDifficultyType["MEDIUM"] = 3500] = "MEDIUM";
+    AIDifficultyType[AIDifficultyType["HARD"] = 2000] = "HARD";
+})(AIDifficultyType || (AIDifficultyType = {}));
+
 var AIStateType;
 (function (AIStateType) {
     AIStateType[AIStateType["INIT"] = 0] = "INIT";
@@ -54,15 +61,13 @@ var AI = (function () {
     };
 
     AI.prototype.updateState = function () {
-        // are some fleets attacking me?
-        // is valuable to defend?
-        //this.state = AIStateType.DEFEND;
-        //return;
-        // else
-        // else
-        // has human more resources?
-        //this.state = AIStateType.CUT_OFF_HUMAN;
-        //return
+        // if are some fleets attacking me?
+        // ---- if is valuable to defend?
+        // ---- ---- this.state = AIStateType.DEFEND;
+        // ---- ---- return;
+        // if has human more resources?
+        // ---- this.state = AIStateType.CUT_OFF_HUMAN;
+        // ---- return
         this.state = AIStateType.ATTACK_RANDOM;
         return;
     };
@@ -94,13 +99,15 @@ var AI = (function () {
 
     AI.prototype.getRandomMove = function () {
         for (var i in this.AIPlanets) {
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.3) {
                 this.move.sourcePlanetIds.push(this.AIPlanets[i].id);
             }
         }
+        if (this.move.sourcePlanetIds.length == 0) {
+            this.move.sourcePlanetIds.push(this.AIPlanets[0].id);
+        }
         this.move.targetPlanetId = this.otherPlanets[Math.floor(Math.random() * this.otherPlanets.length)].id;
 
-        //this.move.targetPlanetId = this.otherPlanets[0].id;
         return this.move;
     };
     return AI;
