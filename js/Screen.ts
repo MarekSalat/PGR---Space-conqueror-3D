@@ -214,7 +214,8 @@ class LevelScreen extends Game3DScreen{
 
         this.level = new Level(this, _game);
 
-        this.aiWrapper = new AIWrapper(this, AIDifficultyType.MEDIUM); // TODO: game difficulty parameter
+        this.aiWrapper = new AIWrapper(this, AIDifficultyType.EASY); // TODO: game difficulty parameter
+        // this.aiWrapper.setDifficulty(AIDifficultyType.SLEEPER); // for afflicted AI
     }
 
     init(){

@@ -14,9 +14,10 @@ class Move {
 }
 
 enum AIDifficultyType {
-    EASY = 5000,
-    MEDIUM = 3500,
-    HARD = 2000
+    SLEEPER = 0,
+    EASY = 6000,
+    MEDIUM = 4500,
+    HARD = 3000
 }
 
 enum AIStateType {
