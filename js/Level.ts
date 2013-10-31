@@ -39,8 +39,10 @@ class Level {
         //var geometry = new THREE.CubeGeometry( 60, 60, 60 );
 
         for(var i = 0; i < this.numberOfPlanets; i++){
-            var geometry = new THREE.SphereGeometry( Math.random()*60 + 40, 32, 24 );
+            var r = Math.random()*60 + 40;
+            var geometry = new THREE.SphereGeometry( r, 32, 24 );
             var pl = this.model.createAndAddPlanet();
+            pl.newShipsPerSecond = r / 2;
 
             var rand = Math.random();
             if(rand < 0.2){
@@ -55,6 +57,9 @@ class Level {
             object.position.x = Math.random() * 800 - 400;
             object.position.y = Math.random() * 800 - 400;
             object.position.z = Math.random() * 800 - 400;
+
+            object.castShadow = true;
+            object.receiveShadow = true;
 
             object.planet = pl;
             this.planets.push(object);
