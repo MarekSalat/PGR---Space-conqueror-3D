@@ -9,6 +9,8 @@
 /// <reference path="Setting.ts" />
 /// <reference path="GameModel.ts" />
 /// <reference path="Level.ts" />
+/// <reference path="AIWrapper.ts" />
+/// <reference path="AI.ts" />
 declare var THREE;
 declare var Detector;
 declare var _game;
@@ -74,37 +76,57 @@ class Game3DScreen extends GameScreen {
         // Scene initialization
         this.scene = new THREE.Scene();
 
-        var spotLight;
 
-        spotLight = new THREE.SpotLight( 0xbbbbbb );
-        spotLight.position.set(0, 1500, 0);
-        spotLight.castShadow = true;
-        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
-        spotLight.shadowBias = 0.0001;
-        spotLight.shadowDarkness = 0.02;
-        spotLight.shadowMapWidth = 2048;
-        spotLight.shadowMapHeight = 2048;
-        this.scene.add(spotLight);
+        var light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 5000, 0);
+        light.target.position.set(0, 0, 0);
+        light.castShadow = true;
+        light.shadowDarkness = 0.5;
+        light.shadowCameraVisible = true; // only for debugging
+        // these six values define the boundaries of the yellow box seen above
+        light.shadowCameraNear = 2;
+        light.shadowCameraFar = 5500;
+        light.shadowCameraLeft = -500;
+        light.shadowCameraRight = 500;
+        light.shadowCameraTop = 500;
+        light.shadowCameraBottom = -500;
+        this.scene.add(light);
 
-        spotLight = new THREE.SpotLight( 0xbbbbbb );
-        spotLight.position.set(-1500, -1500, 0);
-        spotLight.castShadow = true;
-        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
-        spotLight.shadowBias = 0.0001;
-        spotLight.shadowDarkness = 0.2;
-        spotLight.shadowMapWidth = 2048;
-        spotLight.shadowMapHeight = 2048;
-        this.scene.add(spotLight);
+        light = new THREE.AmbientLight( 0x101010 ); // soft white light scene.add( light );
+        this.scene.add(light);
 
-        spotLight = new THREE.SpotLight( 0xbbbbbb );
-        spotLight.position.set(1500, -1500, 0);
-        spotLight.castShadow = true;
-        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
-        spotLight.shadowBias = 0.0001;
-        spotLight.shadowDarkness = 0.2;
-        spotLight.shadowMapWidth = 2048;
-        spotLight.shadowMapHeight = 2048;
-        this.scene.add(spotLight);
+//        var spotLight;
+//
+//        spotLight = new THREE.SpotLight( 0xbbbbbb );
+//        spotLight.position.set(0, 1500, 0);
+//        spotLight.castShadow = true;
+//        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
+//        spotLight.shadowBias = 0.0001;
+//        spotLight.shadowDarkness = 0.02;
+//        spotLight.shadowMapWidth = 2048;
+//        spotLight.shadowMapHeight = 2048;
+//
+//        this.scene.add(spotLight);
+
+//        spotLight = new THREE.SpotLight( 0xbbbbbb );
+//        spotLight.position.set(0, -1500, 0);
+//        //spotLight.castShadow = true;
+//        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
+//        spotLight.shadowBias = 0.0001;
+//        spotLight.shadowDarkness = 0.2;
+//        spotLight.shadowMapWidth = 2048;
+//        spotLight.shadowMapHeight = 2048;
+//        this.scene.add(spotLight);
+
+//        spotLight = new THREE.SpotLight( 0xbbbbbb );
+//        spotLight.position.set(1500, -1500, 0);
+//        spotLight.castShadow = true;
+//        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
+//        spotLight.shadowBias = 0.0001;
+//        spotLight.shadowDarkness = 0.2;
+//        spotLight.shadowMapWidth = 2048;
+//        spotLight.shadowMapHeight = 2048;
+//        this.scene.add(spotLight);
 
         //Projector and raycaster initialization
         this.projector = new THREE.Projector();
@@ -126,7 +148,16 @@ class Game3DScreen extends GameScreen {
 
         this.renderer.shadowMapEnabled = true;
         this.renderer.shadowMapSoft = true;
-        this.renderer.shadowMapType = THREE.PCFShadowMap;
+//        this.renderer.shadowMapType = THREE.PCFShadowMap;
+//
+//        this.renderer.shadowCameraNear = 3;
+//        this.renderer.shadowCameraFar = this.camera.far;
+//        this.renderer.shadowCameraFov = 50;
+//
+//        this.renderer.shadowMapBias = 0.0039;
+//        this.renderer.shadowMapDarkness = 0.5;
+//        this.renderer.shadowMapWidth = 1024;
+//        this.renderer.shadowMapHeight = 1024;
 
         // Container initialization
         this.container = document.createElement( 'div' );
@@ -172,6 +203,8 @@ class LevelScreen extends Game3DScreen{
     public mouseMoveSelectingListener;
     public mouseUpListener;
 
+    public aiWrapper;
+
 
     constructor() {
         super();    console.log("LevelScreen construct");
@@ -180,12 +213,17 @@ class LevelScreen extends Game3DScreen{
         this.mouse.z = 1;
 
         this.level = new Level(this, _game);
+
+        this.aiWrapper = new AIWrapper(this, AIDifficultyType.EASY); // TODO: game difficulty parameter
+        // this.aiWrapper.setDifficulty(AIDifficultyType.SLEEPER); // for afflicted AI
     }
 
     init(){
         super.init();   console.log("LevelScreen init");
 
         this.level.init();
+
+        this.aiWrapper.init();
 
         this.intersects = [];
 
@@ -245,7 +283,9 @@ class LevelScreen extends Game3DScreen{
         document.removeEventListener('mousemove', this.mouseMoveSelectingListener);
         document.removeEventListener('mouseup', this.mouseUpListener);
 
-        this.level.onSelectionFinish();
+        this.setMouse(event);
+        var intersects = this.getIntersectsObjects(this.mouse);
+        this.level.onSelectionFinish(intersects);
 
         this.state = 'looking';
         console.log(this.state);

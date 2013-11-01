@@ -12,7 +12,9 @@ var GUI = function(){
         var gui = new dat.GUI();
         gui.add({message: ""}, 'message');
         gui.add({speed: 2.5}, 'speed', -5, 5);
-        gui.add({explode:function(){}}, 'explode');
+        gui.add({stopAI:function(){
+            _game.screen.level.AISleeperRun(Infinity);
+        }}, 'stopAI');
 
         //return gui;
     };

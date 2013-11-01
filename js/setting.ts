@@ -17,7 +17,7 @@ var Setting = {
         clouds : 0xecf0f1,
         silver : 0xbdc3c7,
         
-        
+
         turquoise : 0x1abc9c,
         green_sea : 0x16a085,
         peter_river : 0x3498db,
