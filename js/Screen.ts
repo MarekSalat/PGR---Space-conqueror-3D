@@ -82,9 +82,9 @@ class Game3DScreen extends GameScreen {
         light.target.position.set(0, 0, 0);
         light.castShadow = true;
         light.shadowDarkness = 0.5;
-        light.shadowCameraVisible = true; // only for debugging
+        //light.shadowCameraVisible = true; // only for debugging
         // these six values define the boundaries of the yellow box seen above
-        light.shadowCameraNear = 2;
+        light.shadowCameraNear = 4500;
         light.shadowCameraFar = 5500;
         light.shadowCameraLeft = -500;
         light.shadowCameraRight = 500;
@@ -94,39 +94,6 @@ class Game3DScreen extends GameScreen {
 
         light = new THREE.AmbientLight( 0x101010 ); // soft white light scene.add( light );
         this.scene.add(light);
-
-//        var spotLight;
-//
-//        spotLight = new THREE.SpotLight( 0xbbbbbb );
-//        spotLight.position.set(0, 1500, 0);
-//        spotLight.castShadow = true;
-//        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
-//        spotLight.shadowBias = 0.0001;
-//        spotLight.shadowDarkness = 0.02;
-//        spotLight.shadowMapWidth = 2048;
-//        spotLight.shadowMapHeight = 2048;
-//
-//        this.scene.add(spotLight);
-
-//        spotLight = new THREE.SpotLight( 0xbbbbbb );
-//        spotLight.position.set(0, -1500, 0);
-//        //spotLight.castShadow = true;
-//        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
-//        spotLight.shadowBias = 0.0001;
-//        spotLight.shadowDarkness = 0.2;
-//        spotLight.shadowMapWidth = 2048;
-//        spotLight.shadowMapHeight = 2048;
-//        this.scene.add(spotLight);
-
-//        spotLight = new THREE.SpotLight( 0xbbbbbb );
-//        spotLight.position.set(1500, -1500, 0);
-//        spotLight.castShadow = true;
-//        spotLight.shadowCameraFov = 30; //VIEW_ANGLE;
-//        spotLight.shadowBias = 0.0001;
-//        spotLight.shadowDarkness = 0.2;
-//        spotLight.shadowMapWidth = 2048;
-//        spotLight.shadowMapHeight = 2048;
-//        this.scene.add(spotLight);
 
         //Projector and raycaster initialization
         this.projector = new THREE.Projector();
