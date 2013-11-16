@@ -99,11 +99,19 @@ var AIWrapper = (function () {
         this.worker.addEventListener('message', this.AIEventListener, false);
     };
 
+    AIWrapper.prototype.setDifficulty = function (difficulty) {
+        this.difficulty = difficulty;
+    };
+
     AIWrapper.prototype.AIRun = function () {
         this.postSleepRequest();
     };
 
     AIWrapper.prototype.postSleepRequest = function () {
+        if (this.difficulty == AIDifficultyType.SLEEPER) {
+            return;
+        }
+
         //console.log("sending sleep request message");
         //console.log(this.sleepRequestMessage);
         this.worker.postMessage(this.sleepRequestMessage);

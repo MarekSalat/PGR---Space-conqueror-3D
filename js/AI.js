@@ -16,9 +16,10 @@ var Move = (function () {
 
 var AIDifficultyType;
 (function (AIDifficultyType) {
-    AIDifficultyType[AIDifficultyType["EASY"] = 5000] = "EASY";
-    AIDifficultyType[AIDifficultyType["MEDIUM"] = 3500] = "MEDIUM";
-    AIDifficultyType[AIDifficultyType["HARD"] = 2000] = "HARD";
+    AIDifficultyType[AIDifficultyType["SLEEPER"] = 0] = "SLEEPER";
+    AIDifficultyType[AIDifficultyType["EASY"] = 6000] = "EASY";
+    AIDifficultyType[AIDifficultyType["MEDIUM"] = 4500] = "MEDIUM";
+    AIDifficultyType[AIDifficultyType["HARD"] = 3000] = "HARD";
 })(AIDifficultyType || (AIDifficultyType = {}));
 
 var AIStateType;

@@ -156,7 +156,8 @@ var LevelScreen = (function (_super) {
 
         this.level = new Level(this, _game);
 
-        this.aiWrapper = new AIWrapper(this, AIDifficultyType.MEDIUM);
+        this.aiWrapper = new AIWrapper(this, AIDifficultyType.EASY);
+        // this.aiWrapper.setDifficulty(AIDifficultyType.SLEEPER); // for afflicted AI
     }
     LevelScreen.prototype.init = function () {
         _super.prototype.init.call(this);

@@ -73,11 +73,18 @@ class AIWrapper {
         this.worker.addEventListener('message', this.AIEventListener, false);
     }
 
+    setDifficulty(difficulty: AIDifficultyType) {
+        this.difficulty = difficulty;
+    }
+
     AIRun() {
         this.postSleepRequest();
     }
 
     postSleepRequest() {
+        if (this.difficulty == AIDifficultyType.SLEEPER) {
+            return;
+        }
         //console.log("sending sleep request message");
         //console.log(this.sleepRequestMessage);
         this.worker.postMessage(this.sleepRequestMessage);
