@@ -14,12 +14,22 @@
     </style>
 </head>
     <body>
+        <script src="js/libs/jquery-1.10.2.min.js"></script>
         <script src="js/libs/three.min.js"></script>
         <script src="js/libs/TrackballControls.js"></script>
         <script src="js/libs/Detector.js"></script>
         <script src="js/libs/stats.min.js"></script>
         <script src="js/libs/dat.gui.min.js"></script>
         <script src="js/libs/dat.color.min.js"></script>
+
+        <script src="../js/libs/postprocessing/EffectComposer.js"></script>
+        <script src="../js/libs/postprocessing/RenderPass.js"></script>
+        <script src="../js/libs/postprocessing/ShaderPass.js"></script>
+        <script src="../js/libs/postprocessing/MaskPass.js"></script>
+        <script src="../js/libs/postprocessing/BloomPass.js"></script>
+        <script src="../js/libs/shaders/CopyShader.js"></script>
+
+        <script src="js/libs/shaders/ColorCorrectionShader.js"></script>
 
         <script src="js/setting.js"></script>
         <script src="js/util.js"></script>
@@ -67,6 +77,9 @@
             }
 
         </script>
+
+
+
 
     </body>
 </html>

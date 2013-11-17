@@ -1,8 +1,7 @@
 var Level = (function () {
-    function Level(screen, gamel) {
+    function Level(screen, gamel, asset) {
         this.screen = screen;
         this.model = null;
-        this.asset = null;
         this.numberOfPlanets = 15;
         this.planets = [];
         this.selectedPlanets = [];
@@ -10,18 +9,20 @@ var Level = (function () {
         this.fleets = [];
         this.player = new GameModel.Player();
         this.competitor = new GameModel.AIPlayer();
-        this.fleetGeometry = null;
-        this.fleetMaterial = null;
         this.model = new GameModel.Model();
+        this.asset = asset;
     }
     Level.prototype.init = function () {
         this.model.init();
 
+        var geometry = this.asset.getPlanetGeometry();
+        var material = this.asset.getPlanetMaterial(0);
+        var materialSelected = this.asset.getPlanetMaterial(0);
+
         for (var i = 0; i < this.numberOfPlanets; i++) {
-            var r = Math.random() * 60 + 40;
-            var geometry = new THREE.SphereGeometry(r, 32, 24);
+            var r = Math.random() + 0.5;
             var pl = this.model.createAndAddPlanet();
-            pl.newShipsPerSecond = r / 2;
+            pl.newShipsPerSecond = r * 10;
 
             var rand = Math.random();
             if (rand < 0.2) {
@@ -30,15 +31,17 @@ var Level = (function () {
                 pl.owner = this.competitor;
             }
 
-            var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0xfafafa }));
+            var object = this.asset.createPlanetMesh(0);
 
             object.position.x = Math.random() * 800 - 400;
             object.position.y = Math.random() * 800 - 400;
             object.position.z = Math.random() * 800 - 400;
 
-            object.castShadow = true;
-            object.receiveShadow = true;
+            object.scale.multiplyScalar(r);
+            object.radius = r * 60;
 
+            //            object.castShadow = true;
+            //            object.receiveShadow = true;
             object.planet = pl;
             this.planets.push(object);
             this.screen.scene.add(object);
@@ -79,24 +82,34 @@ var Level = (function () {
             this.res.add(this.dst);
 
             this.fleets[i].position.copy(this.res);
+
+            this.fleets[i].lookAt(this.fleets[i].dstPositon);
         }
     };
 
     Level.prototype.updatePlanets = function (delta) {
+        if (this.selectedPlanets.length > 0)
+            return;
+
         for (var i in this.planets) {
             var planetRep = this.planets[i];
             if (planetRep.planet.owner == this.player) {
-                planetRep.material.color.setHex(Setting.colors.emerald);
+                this.asset.setPlanetMaterial(planetRep, 1);
             } else if (planetRep.planet.owner == this.competitor) {
-                planetRep.material.color.setHex(Setting.colors.alizarin);
+                this.asset.setPlanetMaterial(planetRep, 2);
             } else {
-                planetRep.material.color.setHex(0xfafafa);
+                this.asset.setPlanetMaterial(planetRep, 0);
             }
         }
     };
 
     Level.prototype.onSelectionStart = function (intersectsArray) {
-        if ('planet' in intersectsArray[0].object && intersectsArray[0].object.planet.owner == this.player)
+        console.log(intersectsArray);
+
+        var tmp = intersectsArray[0];
+        if ('planet' in tmp.object && tmp.object.planet.owner == this.player)
+            return true;
+else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this.player)
             return true;
         return false;
     };
@@ -113,6 +126,8 @@ var Level = (function () {
             var obj = intersectsArray[i].object;
             if ('planet' in obj) {
                 this.onPlanetSelected(obj);
+            } else if ('childOfPlanet' in obj) {
+                this.onPlanetSelected(obj.parent);
             }
         }
     };
@@ -139,6 +154,9 @@ var Level = (function () {
             var target = intersectsArray[intersectsArray.length - 1].object;
             if ("planet" in target)
                 this.selectedTargetPlanet = target;
+else
+                ('childOfPlanet' in target);
+            this.selectedTargetPlanet = target.parent;
         }
 
         if (this.selectedTargetPlanet != null) {
@@ -168,45 +186,30 @@ var Level = (function () {
 
             var fleets = this.model.sendFleets(from.planet, to.planet, time);
             for (var f in fleets) {
-                var fleet = this.createFleet();
+                var fleet = this.asset.createShipMesh(from.planet.owner == this.player ? 1 : 2);
 
                 fleet.dstPositon = to.position;
                 fleet.srcPositon = from.position.clone();
-                var r = from.geometry.radius / 4;
-                var d = from.geometry.radius / 2;
+                var r = from.radius / 4;
+                var d = from.radius / 2;
                 fleet.srcPositon.x += Math.random() * r - d;
                 fleet.srcPositon.y += Math.random() * r - d;
                 fleet.srcPositon.z += Math.random() * r - d;
 
                 fleet.fleet = fleets[f];
                 this.screen.scene.add(fleet);
+
                 this.fleets.push(fleet);
             }
         }
     };
 
-    Level.prototype.createFleet = function () {
-        if (this.fleetGeometry == null)
-            this.fleetGeometry = new THREE.SphereGeometry(10, 12, 8);
-        if (this.fleetMaterial == null)
-            this.fleetMaterial = new THREE.MeshLambertMaterial({ color: 0x0000ff });
-
-        var obj = new THREE.Mesh(this.fleetGeometry, this.fleetMaterial);
-        return obj;
-    };
-
     Level.prototype.planetSelected = function (planetRep) {
-        planetRep.currentHex = planetRep.material.emissive.getHex();
-
-        if (planetRep.planet.owner != this.player) {
-            planetRep.material.emissive.setHex(0xff0000);
-        } else {
-            planetRep.material.emissive.setHex(0x00ff00);
-        }
+        this.asset.makePlanetSelected(planetRep);
     };
 
     Level.prototype.planetUnselected = function (planetRep) {
-        planetRep.material.emissive.setHex(planetRep.currentHex);
+        this.asset.makePlanetUnselected(planetRep);
     };
 
     //@todo: vrati three.js path k planete

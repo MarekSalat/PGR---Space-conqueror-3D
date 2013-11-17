@@ -8,11 +8,12 @@
 
 /// <reference path="Setting.ts" />
 /// <reference path="GameModel.ts" />
+/// <reference path="Asset.ts" />
 
 declare var THREE;
 class Level {
     model = null;
-    asset = null;
+    asset;
 
     numberOfPlanets = 15;
     planets = [];
@@ -23,20 +24,22 @@ class Level {
     player = new GameModel.Player();
     competitor = new GameModel.AIPlayer();
 
-    constructor(public screen: any, gamel: GameModel.Model){
+    constructor(public screen: any, gamel: GameModel.Model, asset : Asset){
         this.model = new GameModel.Model();
+        this.asset = asset;
     }
 
     init (){
         this.model.init();
 
-        //var geometry = new THREE.CubeGeometry( 60, 60, 60 );
+        var geometry = this.asset.getPlanetGeometry();
+        var material = this.asset.getPlanetMaterial(0);
+        var materialSelected = this.asset.getPlanetMaterial(0);
 
         for(var i = 0; i < this.numberOfPlanets; i++){
-            var r = Math.random()*60 + 40;
-            var geometry = new THREE.SphereGeometry( r, 32, 24 );
+            var r = Math.random() + 0.5;
             var pl = this.model.createAndAddPlanet();
-            pl.newShipsPerSecond = r / 2;
+            pl.newShipsPerSecond = r * 10;
 
             var rand = Math.random();
             if(rand < 0.2){
@@ -46,14 +49,17 @@ class Level {
                 pl.owner = this.competitor;
             }
 
-            var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color:  0xfafafa} ) );
+            var object = this.asset.createPlanetMesh(0);
 
             object.position.x = Math.random() * 800 - 400;
             object.position.y = Math.random() * 800 - 400;
             object.position.z = Math.random() * 800 - 400;
 
-            object.castShadow = true;
-            object.receiveShadow = true;
+            object.scale.multiplyScalar(r);
+            object.radius = r*60;
+
+//            object.castShadow = true;
+//            object.receiveShadow = true;
 
             object.planet = pl;
             this.planets.push(object);
@@ -69,7 +75,6 @@ class Level {
         this.model.update(delta);
         this.updateFleets(delta);
         this.updatePlanets(delta);
-
     }
 
     updateFleets(delta){
@@ -97,26 +102,35 @@ class Level {
             this.res.add(this.dst);
 
             this.fleets[i].position.copy(this.res);
+
+            this.fleets[i].lookAt( this.fleets[i].dstPositon );
         }
     }
 
     updatePlanets(delta){
+        if(this.selectedPlanets.length > 0) return;
+
         for(var i in this.planets){
             var planetRep = this.planets[i];
             if (planetRep.planet.owner == this.player ){
-                planetRep.material.color.setHex(Setting.colors.emerald);
+                this.asset.setPlanetMaterial(planetRep, 1);
             }
             else if (planetRep.planet.owner == this.competitor) {
-                planetRep.material.color.setHex(Setting.colors.alizarin);
+                this.asset.setPlanetMaterial(planetRep, 2);
             }
             else {
-                planetRep.material.color.setHex(0xfafafa);
+                this.asset.setPlanetMaterial(planetRep, 0);
             }
         }
     }
 
     onSelectionStart(intersectsArray){
-        if ('planet' in intersectsArray[0].object && intersectsArray[0].object.planet.owner == this.player)
+        console.log(intersectsArray);
+
+        var tmp = intersectsArray[0];
+        if ('planet' in tmp.object && tmp.object.planet.owner == this.player)
+            return true;
+        else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this.player)
             return true;
         return false;
     }
@@ -133,6 +147,9 @@ class Level {
             var obj = intersectsArray[i].object;
             if('planet' in obj){
                 this.onPlanetSelected(obj);
+            }
+            else if('childOfPlanet' in obj){
+                this.onPlanetSelected(obj.parent);
             }
         }
     }
@@ -160,6 +177,8 @@ class Level {
             var target:any = intersectsArray[intersectsArray.length-1].object;
             if("planet" in target)
                 this.selectedTargetPlanet = target;
+            else('childOfPlanet' in target)
+                this.selectedTargetPlanet = target.parent;
         }
 
         if(this.selectedTargetPlanet != null){
@@ -188,46 +207,30 @@ class Level {
 
             var fleets = this.model.sendFleets(from.planet, to.planet, time);
             for(var f in fleets){
-                var fleet = this.createFleet();
+                var fleet = this.asset.createShipMesh(from.planet.owner == this.player ? 1 : 2);
 
                 fleet.dstPositon = to.position;
                 fleet.srcPositon = from.position.clone();
-                var r = from.geometry.radius / 4;
-                var d = from.geometry.radius / 2;
+                var r = from.radius / 4;
+                var d = from.radius / 2;
                 fleet.srcPositon.x += Math.random()*r - d;
                 fleet.srcPositon.y += Math.random()*r - d;
                 fleet.srcPositon.z += Math.random()*r - d;
 
                 fleet.fleet = fleets[f];
                 this.screen.scene.add(fleet);
+
                 this.fleets.push(fleet);
             }
         }
     }
 
-    private fleetGeometry = null;
-    private fleetMaterial = null;
-    createFleet(){
-        if(this.fleetGeometry == null) this.fleetGeometry = new THREE.SphereGeometry( 10, 12, 8 );
-        if(this.fleetMaterial == null) this.fleetMaterial = new THREE.MeshLambertMaterial( { color:  0x0000ff} );
-
-        var obj = new THREE.Mesh( this.fleetGeometry,  this.fleetMaterial);
-        return obj;
-    }
-
     planetSelected(planetRep){
-        planetRep.currentHex = planetRep.material.emissive.getHex();
-
-        if (planetRep.planet.owner != this.player ){
-            planetRep.material.emissive.setHex( 0xff0000 );
-        }
-        else {
-            planetRep.material.emissive.setHex( 0x00ff00 );
-        }
+        this.asset.makePlanetSelected(planetRep);
     }
 
     planetUnselected(planetRep){
-        planetRep.material.emissive.setHex( planetRep.currentHex );
+        this.asset.makePlanetUnselected(planetRep);
     }
 
     //@todo: vrati three.js path k planete
