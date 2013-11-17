@@ -42,8 +42,8 @@ var Game3DScreen = (function (_super) {
         console.log("Game3DScreen init");
 
         // Camera initialization
-        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-        this.camera.position.z = 250;
+        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+        this.camera.position.z = 1500;
 
         // Control initialization
         this.controls = new THREE.TrackballControls(this.camera);
@@ -55,6 +55,7 @@ var Game3DScreen = (function (_super) {
         this.controls.noZoom = false;
         this.controls.maxDistance = 2000;
         this.controls.minDistance = 25;
+
         this.controls.noPan = true;
 
         this.controls.staticMoving = false;
