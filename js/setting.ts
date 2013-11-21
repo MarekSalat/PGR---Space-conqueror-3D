@@ -1,4 +1,6 @@
 var Setting = {
+    timeShift: 1,
+
     app_name : "Space conqueror",
     
     colors : {
@@ -26,5 +28,21 @@ var Setting = {
         midnight_blue : 0x2c3e50
     },
 
-    NUMBER_OF_STARS: 800
+    planet : {
+        // @var new ships created per second
+        default_newShipsPerSecond: 10,
+        default_amountOfShips: 10,
+
+        generatingSpeed: 1,
+
+        maximumAmountOfShips : 999,
+        // @var how many of ships will take off on one move from this planet in hold
+        takeoffInPercent: 0.5,
+        // @var how many ships will be in one fleet
+        fleetCapacity: 10
+    },
+
+    fleet: {
+        speed: 0.05
+    }
 }

@@ -1,9 +1,3 @@
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 /**
 * Created with JetBrains PhpStorm.
 * User: Marek
@@ -11,7 +5,13 @@ var __extends = this.__extends || function (d, b) {
 * Time: 19:41
 * To change this template use File | Settings | File Templates.
 */
-/// <reference path="AI.ts" />
+/// <reference path="setting.ts" />
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var GameModel;
 (function (GameModel) {
     var Factories = (function () {
@@ -162,30 +162,25 @@ var GameModel;
     // ---------------
     var Planet = (function () {
         function Planet() {
-            // @var new ships created per second
-            this.newShipsPerSecond = 30;
+            this.setting = Setting.planet;
             // @var current state
-            this.amountOfShips = 10;
-            this.maximumAmountOfShips = 500;
-            // @var how many of ships will take off on one move from this planet in hold
-            this.takeoffInPercent = 0.5;
-            // @var how many ships will be in one fleet
-            this.fleetCapacity = 10;
+            this.amountOfShips = this.setting.default_amountOfShips;
+            this.newShipsPerSecond = this.setting.default_newShipsPerSecond;
             // @var who owns this planet
             this.owner = Factories.getNeutralOwner();
             // @var
             this.name = "unknown";
         }
         Planet.prototype.sendFleets = function (destination, flyTimeInMillis) {
-            var numberOfShips = Math.ceil(this.amountOfShips * this.takeoffInPercent);
+            var numberOfShips = Math.ceil(this.amountOfShips * this.setting.takeoffInPercent);
             if ((this.amountOfShips - numberOfShips) < 1 || numberOfShips < 0)
                 return [];
 
             this.amountOfShips -= numberOfShips;
 
             var fleets = [];
-            for (var i = numberOfShips; i > 0; i -= this.fleetCapacity) {
-                var fleetCapacity = (i >= this.fleetCapacity) ? this.fleetCapacity : i;
+            for (var i = numberOfShips; i > 0; i -= this.setting.fleetCapacity) {
+                var fleetCapacity = (i >= this.setting.fleetCapacity) ? this.setting.fleetCapacity : i;
 
                 var fleet = new SpaceShipFleet();
                 fleet.from = this;
@@ -240,9 +235,9 @@ else
             if (this.owner === Factories.getNeutralOwner())
                 return;
 
-            this.amountOfShips += (delta / 1000) * this.newShipsPerSecond;
-            if (this.amountOfShips > this.maximumAmountOfShips)
-                this.amountOfShips = this.maximumAmountOfShips;
+            this.amountOfShips += (delta / 1000) * this.newShipsPerSecond * Setting.planet.generatingSpeed;
+            if (this.amountOfShips > this.setting.maximumAmountOfShips)
+                this.amountOfShips = this.setting.maximumAmountOfShips;
         };
         return Planet;
     })();
@@ -304,6 +299,7 @@ else
         };
 
         SpaceShipFleet.prototype.update = function (delta) {
+            delta *= Setting.fleet.speed;
             if (this.timeToStart < 0) {
                 this.timeToStart += delta;
                 return;

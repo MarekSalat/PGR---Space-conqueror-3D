@@ -5,7 +5,8 @@
  * Time: 19:41
  * To change this template use File | Settings | File Templates.
  */
-/// <reference path="AI.ts" />
+/// <reference path="setting.ts" />
+
 module GameModel {
 
     export class Factories {
@@ -131,19 +132,12 @@ module GameModel {
     // ---------------
 
     export class Planet {
-        // @var new ships created per second
-        newShipsPerSecond = 30;
+        setting = Setting.planet;
 
         // @var current state
-        amountOfShips = 10;
+        amountOfShips = this.setting.default_amountOfShips;
 
-        maximumAmountOfShips = 500;
-
-        // @var how many of ships will take off on one move from this planet in hold
-        takeoffInPercent = 0.5;
-
-        // @var how many ships will be in one fleet
-        fleetCapacity = 10;
+        newShipsPerSecond = this.setting.default_newShipsPerSecond;
 
         // @var who owns this planet
         owner = Factories.getNeutralOwner();
@@ -153,14 +147,14 @@ module GameModel {
 
         sendFleets(destination: Planet, flyTimeInMillis:number ){
 
-            var numberOfShips = Math.ceil(this.amountOfShips * this.takeoffInPercent);
+            var numberOfShips = Math.ceil(this.amountOfShips * this.setting.takeoffInPercent);
             if( (this.amountOfShips - numberOfShips) < 1 || numberOfShips < 0) return [];
 
             this.amountOfShips -= numberOfShips;
 
             var fleets = [];
-            for(var i = numberOfShips; i > 0; i -= this.fleetCapacity){
-                var fleetCapacity = (i >= this.fleetCapacity) ? this.fleetCapacity : i;
+            for(var i = numberOfShips; i > 0; i -= this.setting.fleetCapacity){
+                var fleetCapacity = (i >= this.setting.fleetCapacity) ? this.setting.fleetCapacity : i;
 
                 var fleet = new SpaceShipFleet();
                 fleet.from = this;
@@ -216,8 +210,8 @@ module GameModel {
         update (delta){
             if(this.owner === Factories.getNeutralOwner()) return;
 
-            this.amountOfShips += (delta/1000)*this.newShipsPerSecond;
-            if(this.amountOfShips > this.maximumAmountOfShips) this.amountOfShips = this.maximumAmountOfShips;
+            this.amountOfShips += (delta/1000)*this.newShipsPerSecond * Setting.planet.generatingSpeed;
+            if(this.amountOfShips > this.setting.maximumAmountOfShips) this.amountOfShips = this.setting.maximumAmountOfShips;
         }
     };
 
@@ -271,6 +265,7 @@ module GameModel {
         }
 
         update(delta){
+            delta *= Setting.fleet.speed;
             if(this.timeToStart < 0 ){
                 this.timeToStart += delta;
                 return;

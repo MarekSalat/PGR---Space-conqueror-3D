@@ -62,7 +62,7 @@ var AI = (function () {
     };
 
     AI.prototype.updateState = function () {
-        // if are some fleets attacking me?
+        // if are some ship attacking me?
         // ---- if is valuable to defend?
         // ---- ---- this.state = AIStateType.DEFEND;
         // ---- ---- return;

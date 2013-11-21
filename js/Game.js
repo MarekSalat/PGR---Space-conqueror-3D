@@ -26,7 +26,7 @@ var Game = (function () {
     Game.prototype.animate = function () {
         if (this.clock == null)
             this.clock = new THREE.Clock(true);
-        var delta = this.clock.getDelta() * 1000;
+        var delta = this.clock.getDelta() * 1000 * Setting.timeShift;
 
         if (!this.hasScreen())
             return;

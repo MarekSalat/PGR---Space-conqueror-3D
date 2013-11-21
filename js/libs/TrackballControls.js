@@ -357,8 +357,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	}
 
-	function mousedown( event ) {
-
+	this.mousedown = function ( event ) {
 		if ( _this.enabled === false ) return;
 
 		event.preventDefault();
@@ -387,13 +386,12 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		}
 
-		document.addEventListener( 'mousemove', mousemove, false );
-		document.addEventListener( 'mouseup', mouseup, false );
+        _this.domElement.addEventListener( 'mousemove', _this.mousemove, false );
+        _this.domElement.addEventListener( 'mouseup', _this.mouseup, false );
 
 	}
 
-	function mousemove( event ) {
-
+	this.mousemove = function ( event ) {
 		if ( _this.enabled === false ) return;
 
 		event.preventDefault();
@@ -415,8 +413,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	}
 
-	function mouseup( event ) {
-
+	this.mouseup = function ( event ) {
 		if ( _this.enabled === false ) return;
 
 		event.preventDefault();
@@ -424,13 +421,12 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		_state = STATE.NONE;
 
-		document.removeEventListener( 'mousemove', mousemove );
-		document.removeEventListener( 'mouseup', mouseup );
+        _this.domElement.removeEventListener( 'mousemove', _this.mousemove );
+        _this.domElement.removeEventListener( 'mouseup', _this.mouseup );
 
 	}
 
 	function mousewheel( event ) {
-
 		if ( _this.enabled === false ) return;
 
 		event.preventDefault();
@@ -538,7 +534,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 
-	this.domElement.addEventListener( 'mousedown', mousedown, false );
+	this.domElement.addEventListener( 'mousedown', this.mousedown, false );
 
 	this.domElement.addEventListener( 'mousewheel', mousewheel, false );
 	this.domElement.addEventListener( 'DOMMouseScroll', mousewheel, false ); // firefox

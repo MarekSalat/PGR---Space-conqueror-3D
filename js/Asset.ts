@@ -12,7 +12,6 @@ declare var THREE;
 declare var _game;
 
 class Asset {
-
     planetGeometry;
     planetMaterial = [];
 
@@ -51,7 +50,7 @@ class Asset {
                 __this.shiptGeometry = geometry;
                 __this.shipMaterial = new THREE.MeshLambertMaterial( { color:  0xfafafa} );
 
-                var shipGlowMesh;
+                var shipGlowMesh:any;
 
                 __this.shiptMesh[0] = null ;
 
@@ -125,9 +124,16 @@ class Asset {
         group.add(planetMesh);
         if(playerID > 0) group.add(glowMesh);
 
+        var spritey = makeTextSprite( "0000",
+            { fontsize: 35, borderColor: {r:0, g:0, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:0.8} } );
+        spritey.position.set(0,0,0);
+        spritey.childOfPlanet = true;
+        group.add( spritey );
+
         group.glowMesh = glowMesh;
         group.planetMesh = planetMesh;
         group.id = playerID;
+        group.label = spritey;
 
         return group;
     }
@@ -150,6 +156,12 @@ class Asset {
     }
 
     makePlanetSelected(planet){
+        if( !("glowMesh" in planet)) {
+            console.log("Planet does not have glow mesh, I do not know how to select it.")
+            console.log(planet);
+            return;
+        };
+
         planet.glowMesh.oldMaterial = planet.glowMesh.material;
         planet.glowMesh.material = this.planetSelectedGlowMaterial[planet.id];
 
@@ -181,6 +193,82 @@ class Asset {
     }
 
 };
+
+function makeTextSprite( message, parameters )
+{
+    if ( parameters === undefined ) parameters = {};
+
+    var fontface = parameters.hasOwnProperty("fontface") ?
+        parameters["fontface"] : "Arial";
+
+    var fontsize = parameters.hasOwnProperty("fontsize") ?
+        parameters["fontsize"] : 18;
+
+    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+        parameters["borderThickness"] : 10;
+
+    var borderColor = parameters.hasOwnProperty("borderColor") ?
+        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+
+    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+
+    var spriteAlignment = THREE.SpriteAlignment.topLeft;
+
+    var canvas = document.createElement('canvas');
+
+    var context = canvas.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
+
+    // get size data (height depends only on font size)
+    var metrics = context.measureText( message );
+    var textWidth  = metrics.width;
+    canvas.width = textWidth;
+    canvas.height = fontsize;
+
+    var context = canvas.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
+
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+
+    // background color
+    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+        + backgroundColor.b + "," + backgroundColor.a + ")";
+    // border color
+    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+        + borderColor.b + "," + borderColor.a + ")";
+
+    context.lineWidth = borderThickness;
+
+    // text color
+    var c = Setting.colors.wisteria.toString();
+    context.fillStyle = "rgba(255, 255, 255, 1.0)";
+
+    //context.fillText( message, borderThickness, fontsize + borderThickness);
+    context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+    // canvas contents will be used for a texture
+    var texture = new THREE.Texture(canvas)
+    texture.needsUpdate = true;
+//    texture.onUpdate = function(){
+//        console.log("texture update");
+//    };
+
+    var spriteMaterial = new THREE.SpriteMaterial(
+        { map: texture, useScreenCoordinates: false, alignment: spriteAlignment }
+    );
+
+    var sprite = new THREE.Sprite( spriteMaterial );
+
+    sprite.scale.set(30,30,1.0);
+
+    sprite.canvas = canvas;
+    sprite.context = context;
+    sprite.texture = texture;
+
+    return sprite;
+}
 
 // @todo: loader bude mit stejne api jako three.js loader at v tom nemame bordel
 class AssetLoader {

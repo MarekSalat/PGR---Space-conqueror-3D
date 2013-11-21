@@ -1,4 +1,5 @@
 /// <reference path="GameModel.ts" />
+/// <reference path="Setting.ts" />
 
 declare var THREE;
 
@@ -28,7 +29,7 @@ class Game {
     animate(){
         if(this.clock == null)
            this.clock = new THREE.Clock(true);
-        var delta = this.clock.getDelta() * 1000;
+        var delta = this.clock.getDelta() * 1000 * Setting.timeShift;
 
         if(!this.hasScreen()) return;
         var screen = this.screen;

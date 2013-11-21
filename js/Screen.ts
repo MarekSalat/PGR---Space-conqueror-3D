@@ -61,23 +61,9 @@ class Game3DScreen extends GameScreen {
     init(){
         super.init();   console.log("Game3DScreen init");
 
-
         // Camera initialization
         this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
         this.camera.position.z = 250;
-
-        // Control initialization
-        this.controls = new THREE.TrackballControls( this.camera );
-
-        this.controls.rotateSpeed = 1.0;
-        this.controls.zoomSpeed = 1.2;
-        this.controls.panSpeed = 0.8;
-
-        this.controls.noZoom = false;   this.controls.maxDistance = 2000;   this.controls.minDistance = 25;
-        this.controls.noPan = true;
-
-        this.controls.staticMoving = false;
-        this.controls.dynamicDampingFactor = 0.3;
 
         this.asset.init();
 
@@ -168,6 +154,19 @@ class Game3DScreen extends GameScreen {
         this.effectComposer.addPass( copyPass );
         //set last pass in composer chain to renderToScreen
         copyPass.renderToScreen = true;
+
+        // Control initialization
+        this.controls = new THREE.TrackballControls( this.camera, this.container );
+
+        this.controls.rotateSpeed = 0.8;
+        this.controls.zoomSpeed = 1.2;
+        this.controls.panSpeed = 0.8;
+
+        this.controls.noZoom = false;   this.controls.maxDistance = 2000;   this.controls.minDistance = 25;
+        this.controls.noPan = true;
+
+        this.controls.staticMoving = false;
+        this.controls.dynamicDampingFactor = 0.15;
     }
 
     update(delta){
@@ -269,10 +268,12 @@ class LevelScreen extends Game3DScreen{
 
         this.intersects = [];
 
+        this.state = 'looking';
+
         this.mouseDownListener = (function(__this){
             return function(event) {__this.onMouseDown(event)};
         })(this);
-        document.addEventListener( 'mousedown', this.mouseDownListener, false );
+        this.container.addEventListener( 'mousedown', this.mouseDownListener, false );
 
         this.mouseMoveSelectingListener = (function(__this){
             return function(event) {__this.onMouseMoveSelecting(event)};
@@ -281,8 +282,6 @@ class LevelScreen extends Game3DScreen{
         this.mouseUpListener = (function(__this){
             return function(event) {__this.onMouseUp(event)};
         })(this);
-
-        this.state = 'looking';
     }
 
     onMouseDown( event ){
@@ -293,10 +292,21 @@ class LevelScreen extends Game3DScreen{
         if( intersects.length <= 0) return;
         if( !this.level.onSelectionStart(intersects) ) return;
 
+        event.preventDefault();
+        event.stopPropagation();
+
+        /* this statement fix problem with unreleased trackball. Trackball mouse down event is called
+        * before this event and the event registered mouse move event and mose up event.
+        * This cause huge rotation after finnish planet selecting. Only solution is unregistered trackball
+        * events, this is done by calling mouse up event.
+        *
+        * but there will be problems with touch events, but we do not support touch screen devices yet. */
+        this.controls.mouseup(event);
+
         this.controls.noRotate = true;
 
-        document.addEventListener( 'mousemove', this.mouseMoveSelectingListener, false );
-        document.addEventListener( 'mouseup', this.mouseUpListener, false );
+        this.container.addEventListener( 'mousemove', this.mouseMoveSelectingListener, false );
+        this.container.addEventListener( 'mouseup', this.mouseUpListener, false );
 
         this.state = 'selecting';
         console.log(this.state);
@@ -323,8 +333,9 @@ class LevelScreen extends Game3DScreen{
         event.stopPropagation();
 
         this.controls.noRotate = false;
-        document.removeEventListener('mousemove', this.mouseMoveSelectingListener);
-        document.removeEventListener('mouseup', this.mouseUpListener);
+
+        this.container.removeEventListener('mousemove', this.mouseMoveSelectingListener);
+        this.container.removeEventListener('mouseup', this.mouseUpListener);
 
         this.setMouse(event);
         var intersects = this.getIntersectsObjects(this.mouse);

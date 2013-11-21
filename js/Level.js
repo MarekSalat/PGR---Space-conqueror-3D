@@ -4,11 +4,13 @@ var Level = (function () {
         this.model = null;
         this.numberOfPlanets = 15;
         this.planets = [];
+        this.planetsForRaycaster = [];
         this.selectedPlanets = [];
         this.selectedTargetPlanet = null;
         this.fleets = [];
         this.player = new GameModel.Player();
         this.competitor = new GameModel.AIPlayer();
+        this.axis = new THREE.Vector3();
         this.model = new GameModel.Model();
         this.asset = asset;
     }
@@ -22,29 +24,33 @@ var Level = (function () {
         for (var i = 0; i < this.numberOfPlanets; i++) {
             var r = Math.random() + 0.5;
             var pl = this.model.createAndAddPlanet();
-            pl.newShipsPerSecond = r * 10;
+            pl.newShipsPerSecond = r * 2;
 
             var rand = Math.random();
             if (rand < 0.2) {
                 pl.owner = this.player;
             } else if (rand < 0.4) {
                 pl.owner = this.competitor;
+            } else {
+                //pl.amountOfShips = (x % 5) >= 2.5 ? parseInt(x / 5 + "") * 5 + 5 : parseInt(x / 5 + "") * 5;
+                pl.amountOfShips = r * 30;
             }
 
-            var object = this.asset.createPlanetMesh(0);
+            var planetObj3d = this.asset.createPlanetMesh(0);
 
-            object.position.x = Math.random() * 800 - 400;
-            object.position.y = Math.random() * 800 - 400;
-            object.position.z = Math.random() * 800 - 400;
+            planetObj3d.position.x = Math.random() * 800 - 400;
+            planetObj3d.position.y = Math.random() * 800 - 400;
+            planetObj3d.position.z = Math.random() * 800 - 400;
 
-            object.scale.multiplyScalar(r);
-            object.radius = r * 60;
+            planetObj3d.scale.multiplyScalar(r);
+            planetObj3d.radius = r * 60;
 
             //            object.castShadow = true;
             //            object.receiveShadow = true;
-            object.planet = pl;
-            this.planets.push(object);
-            this.screen.scene.add(object);
+            planetObj3d.planet = pl;
+            this.planets.push(planetObj3d);
+            this.planetsForRaycaster.push(planetObj3d.planetMesh);
+            this.screen.scene.add(planetObj3d);
         }
     };
 
@@ -93,6 +99,22 @@ var Level = (function () {
 
         for (var i in this.planets) {
             var planetRep = this.planets[i];
+
+            planetRep.label.position.set(0, 0, 0);
+
+            //planetObj3d.label.translateOnAxis( new THREE.Vector3(0,0,1), planetObj3d.radius/2 + 20);
+            this.axis.copy(this.screen.camera.position);
+            this.axis.sub(planetRep.position);
+            this.axis.normalize();
+
+            var canvas = planetRep.label.canvas;
+            planetRep.label.context.clearRect(0, 0, canvas.width, canvas.height);
+            var amountOfShips = planetRep.planet.amountOfShips;
+            planetRep.label.context.fillText(Math.round(amountOfShips).toString(), canvas.width / 2, canvas.height / 2);
+            planetRep.label.texture.needsUpdate = true;
+
+            planetRep.label.translateOnAxis(this.axis, planetRep.radius + 10);
+
             if (planetRep.planet.owner == this.player) {
                 this.asset.setPlanetMaterial(planetRep, 1);
             } else if (planetRep.planet.owner == this.competitor) {
@@ -126,7 +148,7 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
             var obj = intersectsArray[i].object;
             if ('planet' in obj) {
                 this.onPlanetSelected(obj);
-            } else if ('childOfPlanet' in obj) {
+            } else if ('childOfPlanet' in obj && obj.parent !== undefined) {
                 this.onPlanetSelected(obj.parent);
             }
         }
@@ -182,7 +204,7 @@ else
             if (from === to)
                 continue;
 
-            var time = this.getDistance(from, to) * 5;
+            var time = this.getDistance(from, to);
 
             var fleets = this.model.sendFleets(from.planet, to.planet, time);
             for (var f in fleets) {

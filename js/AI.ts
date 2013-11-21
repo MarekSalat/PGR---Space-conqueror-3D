@@ -63,7 +63,7 @@ class AI {
     }
 
     private updateState() {
-        // if are some fleets attacking me?
+        // if are some ship attacking me?
 
         // ---- if is valuable to defend?
         // ---- ---- this.state = AIStateType.DEFEND;
