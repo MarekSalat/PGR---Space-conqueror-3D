@@ -11,7 +11,7 @@ var PathFinder = (function () {
                 if (!(this.scene.children[i] instanceof THREE.Mesh) || !(this.scene.children[j] instanceof THREE.Mesh))
                     continue;
 
-                this.pointsArray.push(findPath(this.scene.children[i], this.scene.children[j]));
+                this.pointsArray.push(this.findPath(this.scene.children[i], this.scene.children[j]));
             }
         }
 

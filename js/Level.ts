@@ -9,6 +9,7 @@
 /// <reference path="Setting.ts" />
 /// <reference path="GameModel.ts" />
 /// <reference path="Asset.ts" />
+/// <reference path="Skybox.ts" />
 
 declare var THREE;
 class Level {
@@ -36,6 +37,8 @@ class Level {
         var geometry = this.asset.getPlanetGeometry();
         var material = this.asset.getPlanetMaterial(0);
         var materialSelected = this.asset.getPlanetMaterial(0);
+
+        Skybox.init(this.screen.scene);
 
         for(var i = 0; i < this.numberOfPlanets; i++){
             var r = Math.random() + 0.5;
