@@ -169,6 +169,11 @@ class Asset {
     }
 
     makePlanetUnselected(planet){
+        console.log(planet);
+
+        if (planet == undefined) {
+            return;
+        }
         planet.glowMesh.material = planet.glowMesh.oldMaterial;
 
         if(planet.id == 0) planet.remove(planet.glowMesh);
@@ -205,13 +210,13 @@ function makeTextSprite( message, parameters )
         parameters["fontsize"] : 18;
 
     var borderThickness = parameters.hasOwnProperty("borderThickness") ?
-        parameters["borderThickness"] : 10;
+        parameters["borderThickness"] : 4;
 
     var borderColor = parameters.hasOwnProperty("borderColor") ?
         parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
 
     var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+        parameters["backgroundColor"] : { r:0, g:0, b:0, a:1.0 };
 
     var spriteAlignment = THREE.SpriteAlignment.topLeft;
 
@@ -245,7 +250,7 @@ function makeTextSprite( message, parameters )
     var c = Setting.colors.wisteria.toString();
     context.fillStyle = "rgba(255, 255, 255, 1.0)";
 
-    //context.fillText( message, borderThickness, fontsize + borderThickness);
+    // context.fillText( message, borderThickness, fontsize + borderThickness);
     context.fillText(message, canvas.width / 2, canvas.height / 2);
 
     // canvas contents will be used for a texture
@@ -268,6 +273,16 @@ function makeTextSprite( message, parameters )
     sprite.texture = texture;
 
     return sprite;
+}
+
+function drawRect(contex, x, y, w, h, color) {
+    contex.beginPath();
+    contex.rect(x, y, w, h);
+
+    var colorInContext = contex.fillStyle;
+    contex.fillStyle = color;
+    contex.fill();
+    contex.fillStyle = colorInContext;
 }
 
 // @todo: loader bude mit stejne api jako three.js loader at v tom nemame bordel

@@ -23,8 +23,10 @@ class Level {
     selectedTargetPlanet = null;
     fleets = [];
 
-    player = new GameModel.Player();
+    player = new GameModel.RealPlayer();
     competitor = new GameModel.AIPlayer();
+
+    gameOver = false;
 
     constructor(public screen: any, gamel: GameModel.Model, asset : Asset){
         this.model = new GameModel.Model();
@@ -39,6 +41,8 @@ class Level {
         var materialSelected = this.asset.getPlanetMaterial(0);
 
         Skybox.init(this.screen.scene);
+
+        var _id = 0;
 
         for(var i = 0; i < this.numberOfPlanets; i++){
             var r = Math.random() + 0.5;
@@ -66,6 +70,9 @@ class Level {
             planetObj3d.scale.multiplyScalar(r);
             planetObj3d.radius = r*60;
 
+            _id++;
+            planetObj3d._id = _id;
+
 //            object.castShadow = true;
 //            object.receiveShadow = true;
 
@@ -91,6 +98,9 @@ class Level {
         if(this.dst == null) this.dst = new THREE.Vector3(0,0,0);
         if(this.res == null) this.res = new THREE.Vector3(0,0,0);
 
+        this.player.fleetsOnWay = 0;
+        this.competitor.fleetsOnWay = 0;
+
         for(var i in this.fleets){
             var fleet = this.fleets[i].fleet;
 
@@ -113,12 +123,22 @@ class Level {
             this.fleets[i].position.copy(this.res);
 
             this.fleets[i].lookAt( this.fleets[i].dstPositon );
+
+            if (fleet.owner.type == GameModel.PlayerType.BOOT) {
+                this.competitor.fleetsOnWay++;
+            }
+            else if (fleet.owner.type == GameModel.PlayerType.PLAYER) {
+                this.player.fleetsOnWay++;
+            }
         }
     }
 
     axis = new THREE.Vector3();
     updatePlanets(delta){
         if(this.selectedPlanets.length > 0) return;
+
+        this.player.planetsOwned = 0;
+        this.competitor.planetsOwned = 0;
 
         for(var i in this.planets){
             var planetRep = this.planets[i];
@@ -131,7 +151,10 @@ class Level {
 
             var canvas = planetRep.label.canvas;
             planetRep.label.context.clearRect(0, 0, canvas.width, canvas.height);
+            drawRect(planetRep.label.context, 0, 0, 100, 100, "rgba(0, 0, 0, 0.8)");
+
             var amountOfShips = planetRep.planet.amountOfShips;
+
             planetRep.label.context.fillText(Math.round(amountOfShips).toString(), canvas.width / 2, canvas.height / 2);
             planetRep.label.texture.needsUpdate = true;
 
@@ -145,6 +168,13 @@ class Level {
             }
             else {
                 this.asset.setPlanetMaterial(planetRep, 0);
+            }
+
+            if (planetRep.planet.owner.type == GameModel.PlayerType.BOOT) {
+                this.competitor.planetsOwned++;
+            }
+            else if (planetRep.planet.owner.type == GameModel.PlayerType.PLAYER) {
+                this.player.planetsOwned++;
             }
         }
     }
@@ -271,9 +301,9 @@ class Level {
         return this.planets[aidx].position.distanceTo(this.planets[bidx].position);
     }
 
-    getPlanetById(id) {
+    getPlanetById(_id) {
         for (var i = 0, l = this.planets.length; i < l; i++) {
-            if (id == this.planets[i].id) {
+            if (_id == this.planets[i]._id) {
                 return this.planets[i];
             }
         }

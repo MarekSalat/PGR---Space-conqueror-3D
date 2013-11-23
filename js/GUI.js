@@ -6,6 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
+/// <reference path="AI.ts" />
 
 var GUI = function(){
     this.init = function(){
@@ -14,9 +15,12 @@ var GUI = function(){
         gui.add(Setting, 'timeShift', 0.0001, 10);
 
         var aiFolfer = gui.addFolder('AI');
-        aiFolfer.add({stopAI:function(){
-            _game.screen.level.AISleeperRun(Infinity);
-        }}, 'stopAI');
+        aiFolfer.add(Setting.AI, 'status', { disable: AIDifficultyType.SLEEPER,
+            easy: AIDifficultyType.EASY,
+            medium: AIDifficultyType.MEDIUM,
+            hard: AIDifficultyType.HARD }).onFinishChange(function(){
+                _game.screen.aiWrapper.AIRun();
+            });
 
         var planetFolder = gui.addFolder('Planet');
         planetFolder.add(Setting.planet, "generatingSpeed", 0, 5);

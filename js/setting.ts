@@ -1,5 +1,5 @@
 var Setting = {
-    timeShift: 1,
+    timeShift: 0,
 
     app_name : "Space conqueror",
     
@@ -44,5 +44,9 @@ var Setting = {
 
     fleet: {
         speed: 0.05
+    },
+
+    AI: {
+        status: 5000
     }
 }

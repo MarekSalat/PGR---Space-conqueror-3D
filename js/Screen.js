@@ -106,12 +106,19 @@ else
         this.container = document.createElement('div');
         document.body.appendChild(this.container);
 
+        var intro = document.createElement('div');
+        intro.innerHTML = '<div id="nav"><div id="pause" title="pause game"></div><div id="reset" title="reset game"></div></div><div id="intro"><button>start</button></div>';
+        this.container.appendChild(intro);
+
         var info = document.createElement('div');
         info.style.position = 'absolute';
-        info.style.top = '10px';
+        info.style.bottom = '0px';
+        info.style.height = '30px';
+        info.style.lineHeight = '30px';
         info.style.width = '100%';
-        info.style.textAlign = 'center';
-        info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> webgl - ' + document.title;
+        info.style.textAlign = 'right';
+        info.style.backgroundColor = '#000';
+        info.innerHTML = '<a href="http://www.facebook.com/" target="_blank"><img src="/res/icons/fb_logo.png" alt="fb" /></a><h5><a href="http://threejs.org" target="_blank">three.js</a> webgl</h5> &nbsp;&nbsp; <h3>' + document.title + '</h3> &nbsp;&nbsp;&nbsp;&nbsp; <span class="credits">Marek Salát <i class="white">|</i> Michal Pracuch <i class="white">|</i> Petr Přikryl</span>';
         this.container.appendChild(info);
         this.container.appendChild(this.renderer.domElement);
 
@@ -208,6 +215,24 @@ else
 
             flare.rotation = 0;
         }
+    };
+
+    Game3DScreen.prototype.gameOver = function () {
+        var gameOver = document.createElement('div');
+        gameOver.style.textAlign = "center";
+        gameOver.innerHTML = '<h1>GAME OVER</h1>';
+
+        var reset = document.getElementById("reset");
+        reset.style.position = "absolute";
+        reset.style.left = "calc(50% - 30px)";
+
+        var intro = document.getElementById("intro");
+        intro.style.paddingTop = "20px";
+        intro.removeChild(intro.getElementsByTagName("button")[0]);
+        intro.appendChild(gameOver);
+        intro.appendChild(reset);
+
+        document.getElementById("pause").click();
     };
     return Game3DScreen;
 })(GameScreen);
@@ -325,6 +350,11 @@ var LevelScreen = (function (_super) {
     LevelScreen.prototype.update = function (delta) {
         _super.prototype.update.call(this, delta);
         this.level.update(delta);
+
+        if (this.level.player.planetsOwned == 0 && this.level.player.fleetsOnWay == 0 && !this.level.gameOver) {
+            this.level.gameOver = true;
+            this.gameOver();
+        }
     };
 
     LevelScreen.prototype.render = function (delta) {

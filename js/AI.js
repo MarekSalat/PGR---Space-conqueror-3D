@@ -17,9 +17,9 @@ var Move = (function () {
 var AIDifficultyType;
 (function (AIDifficultyType) {
     AIDifficultyType[AIDifficultyType["SLEEPER"] = 0] = "SLEEPER";
-    AIDifficultyType[AIDifficultyType["EASY"] = 6000] = "EASY";
-    AIDifficultyType[AIDifficultyType["MEDIUM"] = 4500] = "MEDIUM";
-    AIDifficultyType[AIDifficultyType["HARD"] = 3000] = "HARD";
+    AIDifficultyType[AIDifficultyType["EASY"] = 5000] = "EASY";
+    AIDifficultyType[AIDifficultyType["MEDIUM"] = 3500] = "MEDIUM";
+    AIDifficultyType[AIDifficultyType["HARD"] = 2000] = "HARD";
 })(AIDifficultyType || (AIDifficultyType = {}));
 
 var AIStateType;
@@ -101,13 +101,13 @@ var AI = (function () {
     AI.prototype.getRandomMove = function () {
         for (var i in this.AIPlanets) {
             if (Math.random() < 0.3) {
-                this.move.sourcePlanetIds.push(this.AIPlanets[i].id);
+                this.move.sourcePlanetIds.push(this.AIPlanets[i]._id);
             }
         }
         if (this.move.sourcePlanetIds.length == 0) {
-            this.move.sourcePlanetIds.push(this.AIPlanets[0].id);
+            this.move.sourcePlanetIds.push(this.AIPlanets[0]._id);
         }
-        this.move.targetPlanetId = this.otherPlanets[Math.floor(Math.random() * this.otherPlanets.length)].id;
+        this.move.targetPlanetId = this.otherPlanets[Math.floor(Math.random() * this.otherPlanets.length)]._id;
 
         return this.move;
     };

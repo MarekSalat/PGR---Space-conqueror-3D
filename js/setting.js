@@ -1,5 +1,5 @@
 var Setting = {
-    timeShift: 1,
+    timeShift: 0,
     app_name: "Space conqueror",
     colors: {
         emerald: 0x2ecc71,
@@ -36,6 +36,9 @@ var Setting = {
     },
     fleet: {
         speed: 0.05
+    },
+    AI: {
+        status: 5000
     }
 };
-//# sourceMappingURL=Setting.js.map
+//# sourceMappingURL=setting.js.map

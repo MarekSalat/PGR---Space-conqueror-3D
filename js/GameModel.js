@@ -122,6 +122,8 @@ var GameModel;
             this.type = PlayerType.NONE;
             // @var number of conquered planets, number of planets player currently have
             this.conqueredPlanets = 0;
+            this.planetsOwned = 0;
+            this.fleetsOnWay = 0;
         }
         return Player;
     })();

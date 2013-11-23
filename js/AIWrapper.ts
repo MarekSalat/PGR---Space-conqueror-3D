@@ -1,6 +1,6 @@
 /**
  * Created with IntelliJ IDEA.
- * User: Nich
+ * User: Petr
  * Date: 30.10.13
  * Time: 22:56
  * To change this template use File | Settings | File Templates.
@@ -78,22 +78,24 @@ class AIWrapper {
     }
 
     AIRun() {
-        this.postSleepRequest();
+        this.difficulty = Setting.AI.status;
+        this.postAIMoveRequest();
     }
 
     postSleepRequest() {
         if (this.difficulty == AIDifficultyType.SLEEPER) {
             return;
         }
-        //console.log("sending sleep request message");
+        // console.log("sending sleep request message " + this.difficulty);
         //console.log(this.sleepRequestMessage);
+        this.sleepRequestMessage.sleepTime = this.difficulty;
         this.worker.postMessage(this.sleepRequestMessage);
     }
 
     postAIMoveRequest() {
         this.moveRequestMessage.planets = this.serializePlanets();
 
-        // console.log("sending move request message");
+        // console.log("sending move request message " + this.difficulty);
         // console.log(this.moveRequestMessage);
 
         this.worker.postMessage(this.moveRequestMessage);
@@ -101,6 +103,14 @@ class AIWrapper {
 
 
     AIEventHandler(e) {
+        this.difficulty = Setting.AI.status;
+
+        // console.log("AI event handler " + this.difficulty + " " + e);
+
+        if (this.difficulty == AIDifficultyType.SLEEPER) {
+            return;
+        }
+
         if (e.data instanceof Object && e.data.hasOwnProperty("type")) {
             if (e.data.type == MessageType.SLEEP_RESPONSE) {
                 // console.log("AI awaken");
@@ -126,6 +136,8 @@ class AIWrapper {
             return false;
         }
 
+        // console.log(move);
+
         var sourcePlanets = [];
         var sourcePlanetIds = move.sourcePlanetIds;
 
@@ -149,7 +161,7 @@ class AIWrapper {
 
             var planet = {};
             planet['position'] = levelPlanets[i].position;
-            planet['id'] = levelPlanets[i].id;
+            planet['_id'] = levelPlanets[i]._id;
             planet['planet'] = {};
             planet['planet']['amountOfShips'] = levelPlanets[i].planet.amountOfShips;
             planet['planet']['owner'] = levelPlanets[i].planet.owner;

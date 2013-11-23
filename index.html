@@ -6,11 +6,96 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
         body {
-            font-family: Monospace,monospace;
+            font-family: Arial, Helvetica, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
             overflow: hidden;
+            color: #fff;
         }
+        h1,h2,h3,h4,h5 {
+            margin: 0px;
+            display: inline-block;
+        }
+        a {
+            color: #3498db;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+        img {
+            float: left;
+            margin: 5px;
+            height: 20px;
+        }
+        .credits {
+            float: right;
+            color: #3498db;
+            font-size: 0.8em;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .white {
+            color: #fff;
+        }
+
+        #nav {
+            position: absolute;
+            top: 5px;
+            left: calc(50% - 55px);
+            width: 115px;
+            height: 50px;
+        }
+
+        #pause {
+            width: 50px;
+            height: 50px;
+            background: url(/res/icons/pause.png) no-repeat #3498db;
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        #pause:hover {
+            background-color: #2980b9;
+        }
+
+        #reset {
+            width: 59px;
+            height: 50px;
+            background: url(/res/icons/reset.png) no-repeat #e74c3c;
+            cursor: pointer;
+            display: inline-block;
+        }
+        #reset:hover {
+            background-color: #c0392b;
+        }
+
+        #intro {
+            width: 100%;
+            height: 100%;
+            background: url(/res/icons/intro.png) no-repeat center 100px;
+            background-color: rgba(44, 62, 80, 0.92);
+            position: absolute;
+        }
+
+        #intro button {
+            font-size: 1.5em;
+            position: absolute;
+            top: 600px;
+            left: calc(50% - 150px);
+            border: 0px;
+            width: 300px;
+            padding: 20px 70px;
+            background: #3498db;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #intro button:hover {
+            background: #2980b9;
+        }
+
+
+
     </style>
 </head>
     <body>
@@ -65,9 +150,6 @@
 
                 gui = new GUI();
                 gui.init();
-
-                // start AI brain
-                _game.screen.aiWrapper.AIRun();
             }
 
             function animate() {
@@ -77,6 +159,32 @@
                 stats.update();
             }
 
+            $(function() {
+                var timeShift = Setting.timeShift;
+
+                $("#intro button.resume").click(function() {
+                    $("#intro").fadeOut(500, function() {
+                        Setting.timeShift = timeShift;
+                    });
+                });
+                $("#intro button").click(function() {
+                    $("#intro").fadeOut(500, function() {
+                        Setting.timeShift = 1;
+                        // start AI brain
+                        _game.screen.aiWrapper.AIRun();
+                    });
+                });
+                $("#pause").click(function() {
+                    timeShift = Setting.timeShift;
+                    Setting.timeShift = 0;
+                    $("#intro button").addClass("resume");
+                    $("#intro button").text("resume");
+                    $("#intro").fadeIn();
+                });
+                $("#reset").click(function() {
+                    location.reload();
+                });
+            })
         </script>
 
 

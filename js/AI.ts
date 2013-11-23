@@ -15,9 +15,9 @@ class Move {
 
 enum AIDifficultyType {
     SLEEPER = 0,
-    EASY = 6000,
-    MEDIUM = 4500,
-    HARD = 3000
+    EASY = 5000,
+    MEDIUM = 3500,
+    HARD = 2000
 }
 
 enum AIStateType {
@@ -106,14 +106,14 @@ class AI {
 
     getRandomMove() {
         for (var i in this.AIPlanets) {
-            if (Math.random() < 0.3) { // 33.3% chance that planet will be give into soucePlanets
-                this.move.sourcePlanetIds.push(this.AIPlanets[i].id);
+            if (Math.random() < 0.3) { // 30% chance that planet will be give into soucePlanets
+                this.move.sourcePlanetIds.push(this.AIPlanets[i]._id);
             }
         }
         if (this.move.sourcePlanetIds.length == 0) {
-            this.move.sourcePlanetIds.push(this.AIPlanets[0].id);
+            this.move.sourcePlanetIds.push(this.AIPlanets[0]._id);
         }
-        this.move.targetPlanetId = this.otherPlanets[Math.floor(Math.random()*this.otherPlanets.length)].id;
+        this.move.targetPlanetId = this.otherPlanets[Math.floor(Math.random()*this.otherPlanets.length)]._id;
 
         return this.move
     }

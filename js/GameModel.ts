@@ -107,6 +107,9 @@ module GameModel {
         // @var number of conquered planets, number of planets player currently have
         conqueredPlanets = 0;
 
+        planetsOwned = 0;
+        fleetsOnWay = 0;
+
         constructor(){}
     };
 
