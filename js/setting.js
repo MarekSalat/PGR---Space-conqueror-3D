@@ -41,4 +41,4 @@ var Setting = {
         status: 5000
     }
 };
-//# sourceMappingURL=setting.js.map
+//# sourceMappingURL=Setting.js.map
