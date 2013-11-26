@@ -151,7 +151,6 @@ class Level {
             this.fleets[i].position.copy(this.res);
 
 
-
             if (fleet.owner.type == GameModel.PlayerType.BOOT) {
                 this.competitor.fleetsOnWay++;
             }
@@ -161,7 +160,6 @@ class Level {
 
 //            this.fleets[i].lookAt( this.fleets[i].dstPositon );
             this.fleets[i].lookAt(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
-
         }
     }
 
@@ -260,12 +258,27 @@ class Level {
 
     onSelectionFinish(intersectsArray){
         console.log("onSelectionFinish intersectsArray.lenght = " + intersectsArray.length + ' target ' + this.selectedTargetPlanet);
+        console.log(intersectsArray);
         if(this.selectedTargetPlanet == null && intersectsArray.length > 0){
-            var target:any = intersectsArray[intersectsArray.length-1].object;
-            if("planet" in target)
-                this.selectedTargetPlanet = target;
-            else('childOfPlanet' in target)
-                this.selectedTargetPlanet = target.parent;
+            for(var i in intersectsArray){
+                var target:any = intersectsArray[i].object;
+
+
+
+//            var target:any = intersectsArray[intersectsArray.length-1-2].object;
+//            console.log("HERE");
+//            console.log(target);
+                if("planet" in target)
+                {
+                    this.selectedTargetPlanet = target;
+                    break;
+                }
+                else if('childOfPlanet' in target)
+                {
+                    this.selectedTargetPlanet = target.parent;
+                    break;
+                }
+            }
         }
 
         if(this.selectedTargetPlanet != null){

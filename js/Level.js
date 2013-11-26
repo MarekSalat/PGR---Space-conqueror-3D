@@ -221,13 +221,19 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
 
     Level.prototype.onSelectionFinish = function (intersectsArray) {
         console.log("onSelectionFinish intersectsArray.lenght = " + intersectsArray.length + ' target ' + this.selectedTargetPlanet);
+        console.log(intersectsArray);
         if (this.selectedTargetPlanet == null && intersectsArray.length > 0) {
-            var target = intersectsArray[intersectsArray.length - 1].object;
-            if ("planet" in target)
-                this.selectedTargetPlanet = target;
-else
-                ('childOfPlanet' in target);
-            this.selectedTargetPlanet = target.parent;
+            for (var i in intersectsArray) {
+                var target = intersectsArray[i].object;
+
+                if ("planet" in target) {
+                    this.selectedTargetPlanet = target;
+                    break;
+                } else if ('childOfPlanet' in target) {
+                    this.selectedTargetPlanet = target.parent;
+                    break;
+                }
+            }
         }
 
         if (this.selectedTargetPlanet != null) {
