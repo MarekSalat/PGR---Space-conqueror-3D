@@ -104,11 +104,11 @@ class Skybox {
 
         while (array.length < 6)
         {
-            var rand = THREE.Math.randInt(1, 6);
+            var rand = THREE.Math.randInt(1, 2);
 
 //            console.log ("rand " + rand);
 
-            if (array.indexOf(rand) == -1)
+//            if (array.indexOf(rand) == -1)
             {
 //                console.log ("push " + rand);
                 array.push(rand);

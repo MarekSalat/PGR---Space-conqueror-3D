@@ -1,24 +1,31 @@
 var PathFinder = (function () {
-    function PathFinder(scene) {
-        this.scene = scene;
-        this.pointsArray = [];
+    function PathFinder(planets) {
+        this.planets = planets;
+        this.pathsArray = [];
     }
     PathFinder.prototype.initPaths = function () {
         console.log("initPaths");
 
-        for (var i in this.scene.children) {
-            for (var j in this.scene.children) {
-                if (!(this.scene.children[i] instanceof THREE.Mesh) || !(this.scene.children[j] instanceof THREE.Mesh))
-                    continue;
+        for (var i in this.planets) {
+            for (var j in this.planets) {
+                //                if (!(this.scene.children[i] instanceof THREE.Object3D) || !(this.scene.children[j] instanceof THREE.Object3D))
+                //                    continue;
+                var path = new Path();
+                path.pointsArray = this.findPath(this.planets[i], this.planets[j]);
+                path.computeLengths();
 
-                this.pointsArray.push(this.findPath(this.scene.children[i], this.scene.children[j]));
+                //                console.log(path);
+                this.pathsArray.push(path);
+                //                this.pathsArray.push(this.findPath(this.planets[i], this.planets[j]));
             }
         }
 
-        return this.pointsArray;
+        return this.pathsArray;
     };
 
     PathFinder.prototype.findPath = function (from, to) {
+        //        if (typeof from.planetMesh === "undefined" || typeof to.planetMesh === "undefined")
+        //            return [];
         var points = [];
         points.push(from.position);
 
@@ -27,7 +34,7 @@ var PathFinder = (function () {
 
         var raycaster = new THREE.Raycaster();
         raycaster.set(fromPos, toNormal.sub(fromPos).normalize());
-        var intersects = raycaster.intersectObjects(this.scene.children);
+        var intersects = raycaster.intersectObjects(this.planets, true);
 
         var i = 0;
         var object;
@@ -38,7 +45,7 @@ var PathFinder = (function () {
         var same = false;
 
         var dist = from.position.distanceTo(to.position);
-        var radDist = from.geometry.radius + to.geometry.radius;
+        var radDist = from.radius + to.radius;
 
         var distance = Infinity;
 
@@ -48,19 +55,12 @@ var PathFinder = (function () {
             j++;
             i = 0;
 
-            while (i < intersects.length) {
-                if (!(intersects[i].object instanceof THREE.Mesh))
-                    i++;
-else
-                    break;
-            }
-
-            if (i < intersects.length && intersects[i].object.position != to.position && distance > intersects[i].distance) {
-                if (object == intersects[i].object) {
+            if (i < intersects.length && intersects[i].object.parent.position != to.position && distance > intersects[i].distance) {
+                if (object == intersects[i].object.parent) {
                     same = true;
                 }
 
-                object = intersects[i].object;
+                object = intersects[i].object.parent;
 
                 lineVec.copy(to.position);
                 lineVec.sub(fromPos);
@@ -92,7 +92,7 @@ else
                 if (isNaN(alpha))
                     alpha = 0;
 
-                var hypo = object.geometry.radius * 2;
+                var hypo = object.radius * 2;
                 var opposite = hypo * Math.sin(alpha);
                 var adjacent = hypo * Math.cos(alpha);
 
@@ -120,7 +120,7 @@ else
                 point.x = object.position.x + opposite;
                 point.y = object.position.y - adjacent;
                 point.z = object.position.z;
-            } else if (i < intersects.length && intersects[i].object.position == to.position) {
+            } else if (i < intersects.length && intersects[i].object.parent.position == to.position) {
                 break;
             } else {
                 okPoint = true;
@@ -142,7 +142,7 @@ else
             }
 
             raycaster.set(fromPos, toNormal.sub(fromPos).normalize());
-            intersects = raycaster.intersectObjects(this.scene.children);
+            intersects = raycaster.intersectObjects(this.planets, true);
         }
 
         points.push(to.position);
@@ -151,30 +151,33 @@ else
     };
 
     PathFinder.prototype.getPath = function (from, to) {
-        for (var i in this.pointsArray) {
-            var points = this.pointsArray[i];
+        for (var i in this.pathsArray) {
+            var path = this.pathsArray[i];
 
-            if (points[0] == from && points[points.length - 1] == to)
-                return points;
+            if (path.pointsArray[0] == from && path.pointsArray[path.pointsArray.length - 1] == to)
+                return path;
         }
 
         return null;
     };
 
-    PathFinder.prototype.drawPaths = function () {
+    PathFinder.prototype.drawPaths = function (scene) {
+        console.log("drawPaths");
+
+        //        console.log(this.pathsArray);
         var geometry;
         var line;
 
-        for (var i in this.pointsArray) {
-             {
+        for (var i in this.pathsArray) {
+            if (this.pathsArray[i].pointsArray.length > 2) {
                 geometry = new THREE.Geometry();
 
-                for (var j in this.pointsArray[i]) {
-                    geometry.vertices.push(this.pointsArray[i][j]);
+                for (var j in this.pathsArray[i].pointsArray) {
+                    geometry.vertices.push(this.pathsArray[i].pointsArray[j]);
                 }
 
                 line = new THREE.Line(geometry);
-                this.scene.add(line);
+                scene.add(line);
             }
         }
     };

@@ -22,7 +22,7 @@ var Asset = (function () {
         this.planetSelectedGlowMaterial[2] = this.createShaderMaterial(1.0, 0.5, Setting.colors.alizarin);
 
         var loader = new THREE.JSONLoader();
-        loader.load('../asset/ship.js', (function (__this) {
+        loader.load('asset/ship.js', (function (__this) {
             return function (geometry) {
                 //geometry.applyMatrix( new THREE.Matrix4().makeRotationZ( Math.PI / 2 ) );
                 __this.shiptGeometry = geometry;
@@ -146,9 +146,9 @@ var Asset = (function () {
 
     Asset.prototype.getFlareTextures = function () {
         if (this.textureFlare.length <= 0) {
-            this.textureFlare[0] = THREE.ImageUtils.loadTexture("../asset/lensflare0.png");
-            this.textureFlare[1] = THREE.ImageUtils.loadTexture("../asset/lensflare2.png");
-            this.textureFlare[2] = THREE.ImageUtils.loadTexture("../asset/lensflare3.png");
+            this.textureFlare[0] = THREE.ImageUtils.loadTexture("asset/lensflare0.png");
+            this.textureFlare[1] = THREE.ImageUtils.loadTexture("asset/lensflare2.png");
+            this.textureFlare[2] = THREE.ImageUtils.loadTexture("asset/lensflare3.png");
         }
 
         return this.textureFlare;

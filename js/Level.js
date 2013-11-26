@@ -60,6 +60,8 @@ var Level = (function () {
             this.planetsForRaycaster.push(planetObj3d.planetMesh);
             this.screen.scene.add(planetObj3d);
         }
+
+        this.pathFinder = new PathFinder(this.planets);
     };
 
     Level.prototype.update = function (delta) {
@@ -87,26 +89,44 @@ var Level = (function () {
                 this.fleets.splice(i, 1);
                 continue;
             }
-            this.src.copy(this.fleets[i].srcPositon);
-            this.dst.copy(this.fleets[i].dstPositon);
+
+            var t = 1 - fleet.timeToArrive / fleet.flyTime;
+
+            if (t > this.fleets[i].path.lengthsArray[this.fleets[i].index + 1]) {
+                this.fleets[i].index++;
+            }
+
+            var t2 = (t - this.fleets[i].path.lengthsArray[this.fleets[i].index]) / (this.fleets[i].path.lengthsArray[this.fleets[i].index + 1] - this.fleets[i].path.lengthsArray[this.fleets[i].index]);
+
+            //            if (i == 0)
+            //            {
+            //                console.log("t: " + t + " " + (1 - t) + " t2: " + t2 + " " + (1 - t2));
+            //                console.log("lengthsArray: " + this.fleets[i].path.lengthsArray[this.fleets[i].index]);
+            //                console.log("lengthsArray + 1: " + this.fleets[i].path.lengthsArray[this.fleets[i].index + 1]);
+            //                console.log("index: " + this.fleets[i].index);
+            //            }
+            this.src.copy(this.fleets[i].path.pointsArray[this.fleets[i].index]);
+            this.dst.copy(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
+
+            //            this.src.copy(this.fleets[i].srcPositon);
+            //            this.dst.copy(this.fleets[i].dstPositon);
             this.res.set(0, 0, 0);
 
-            var t = fleet.timeToArrive / fleet.flyTime;
-
-            this.src.multiplyScalar(t);
-            this.dst.multiplyScalar(1 - t);
+            this.src.multiplyScalar(1 - t2);
+            this.dst.multiplyScalar(t2);
             this.res.add(this.src);
             this.res.add(this.dst);
 
             this.fleets[i].position.copy(this.res);
-
-            this.fleets[i].lookAt(this.fleets[i].dstPositon);
 
             if (fleet.owner.type == GameModel.PlayerType.BOOT) {
                 this.competitor.fleetsOnWay++;
             } else if (fleet.owner.type == GameModel.PlayerType.PLAYER) {
                 this.player.fleetsOnWay++;
             }
+
+            //            this.fleets[i].lookAt( this.fleets[i].dstPositon );
+            this.fleets[i].lookAt(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
         }
     };
 
@@ -241,6 +261,9 @@ else
 
                 fleet.dstPositon = to.position;
                 fleet.srcPositon = from.position.clone();
+                fleet.path = this.pathFinder.getPath(from.position, to.position);
+                fleet.index = 0;
+
                 var r = from.radius / 4;
                 var d = from.radius / 2;
                 fleet.srcPositon.x += Math.random() * r - d;

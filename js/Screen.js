@@ -42,8 +42,8 @@ var Game3DScreen = (function (_super) {
         console.log("Game3DScreen init");
 
         // Camera initialization
-        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-        this.camera.position.z = 250;
+        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+        this.camera.position.z = 1500;
 
         this.asset.init();
 
@@ -76,7 +76,7 @@ var Game3DScreen = (function (_super) {
 
         dirLight.color.setHSL(0.1, 0.7, 0.5);
 
-        this.addLight(0.995, 0.5, 0.9, 0, 5000, 0);
+        this.addLight(0.995, 0.5, 0.9, 0, 2000, 0);
 
         //Projector and raycaster initialization
         this.projector = new THREE.Projector();
@@ -180,11 +180,11 @@ else
         var flareColor = new THREE.Color(0xffffff);
         flareColor.setHSL(h, s, l + 0.5);
 
-        var lensFlare = new THREE.LensFlare(textureFlare[0], 512, 0.0, THREE.AdditiveBlending, flareColor);
+        var lensFlare = new THREE.LensFlare(textureFlare[0], 256, 0.0, THREE.AdditiveBlending, flareColor);
 
-        lensFlare.add(textureFlare[1], 512, 0.0, THREE.AdditiveBlending);
-        lensFlare.add(textureFlare[1], 512, 0.0, THREE.AdditiveBlending);
-        lensFlare.add(textureFlare[1], 512, 0.0, THREE.AdditiveBlending);
+        lensFlare.add(textureFlare[1], 256, 0.0, THREE.AdditiveBlending);
+        lensFlare.add(textureFlare[1], 256, 0.0, THREE.AdditiveBlending);
+        lensFlare.add(textureFlare[1], 256, 0.0, THREE.AdditiveBlending);
 
         lensFlare.add(textureFlare[2], 60, 0.6, THREE.AdditiveBlending);
         lensFlare.add(textureFlare[2], 70, 0.7, THREE.AdditiveBlending);

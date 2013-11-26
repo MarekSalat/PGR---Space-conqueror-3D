@@ -92,9 +92,9 @@ var Skybox = (function () {
         var array = [];
 
         while (array.length < 6) {
-            var rand = THREE.Math.randInt(1, 6);
+            var rand = THREE.Math.randInt(1, 2);
 
-            if (array.indexOf(rand) == -1) {
+             {
                 //                console.log ("push " + rand);
                 array.push(rand);
             }

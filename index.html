@@ -128,12 +128,18 @@
         <script src="js/AIWrapper.js"></script>
         <script src="js/AI.js"></script>
         <script src="js/Skybox.js"></script>
+        <script src="js/Path.js"></script>
+        <script src="js/PathFinder.js"></script>
 
         <script>
             var stats, _game, gui;
 
             init();
             animate();
+
+//            console.log(_game.screen.level);
+            _game.screen.level.pathFinder.initPaths();
+//            _game.screen.level.pathFinder.drawPaths(_game.screen.scene);
 
             function init() {
                 stats = new Stats();
