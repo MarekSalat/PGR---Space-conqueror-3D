@@ -25,7 +25,7 @@ var GUI = function(){
         var planetFolder = gui.addFolder('Planet');
         planetFolder.add(Setting.planet, "generatingSpeed", 0, 5);
         planetFolder.add(Setting.planet, "takeoffInPercent",  0, 1);
-        planetFolder.add(Setting.planet, "fleetCapacity",  0, 50);
+        planetFolder.add(Setting.planet, "fleetCapacity",  1, 50);
         planetFolder.open();
 
         var fleetFolder = gui.addFolder('Fleet');

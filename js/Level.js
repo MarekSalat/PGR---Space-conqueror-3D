@@ -2,7 +2,6 @@ var Level = (function () {
     function Level(screen, gamel, asset) {
         this.screen = screen;
         this.model = null;
-        this.numberOfPlanets = 15;
         this.planets = [];
         this.planetsForRaycaster = [];
         this.selectedPlanets = [];
@@ -11,57 +10,12 @@ var Level = (function () {
         this.player = new GameModel.RealPlayer();
         this.competitor = new GameModel.AIPlayer();
         this.gameOver = false;
+        this.playerWin = false;
         this.axis = new THREE.Vector3();
         this.model = new GameModel.Model();
         this.asset = asset;
     }
     Level.prototype.init = function () {
-        this.model.init();
-
-        var geometry = this.asset.getPlanetGeometry();
-        var material = this.asset.getPlanetMaterial(0);
-        var materialSelected = this.asset.getPlanetMaterial(0);
-
-        Skybox.init(this.screen.scene);
-
-        var _id = 0;
-
-        for (var i = 0; i < this.numberOfPlanets; i++) {
-            var r = Math.random() + 0.5;
-            var pl = this.model.createAndAddPlanet();
-            pl.newShipsPerSecond = r * 2;
-
-            var rand = Math.random();
-            if (rand < 0.2) {
-                pl.owner = this.player;
-            } else if (rand < 0.4) {
-                pl.owner = this.competitor;
-            } else {
-                //pl.amountOfShips = (x % 5) >= 2.5 ? parseInt(x / 5 + "") * 5 + 5 : parseInt(x / 5 + "") * 5;
-                pl.amountOfShips = r * 30;
-            }
-
-            var planetObj3d = this.asset.createPlanetMesh(0);
-
-            planetObj3d.position.x = Math.random() * 800 - 400;
-            planetObj3d.position.y = Math.random() * 800 - 400;
-            planetObj3d.position.z = Math.random() * 800 - 400;
-
-            planetObj3d.scale.multiplyScalar(r);
-            planetObj3d.radius = r * 60;
-
-            _id++;
-            planetObj3d._id = _id;
-
-            //            object.castShadow = true;
-            //            object.receiveShadow = true;
-            planetObj3d.planet = pl;
-            this.planets.push(planetObj3d);
-            this.planetsForRaycaster.push(planetObj3d.planetMesh);
-            this.screen.scene.add(planetObj3d);
-        }
-
-        this.pathFinder = new PathFinder(this.planets);
     };
 
     Level.prototype.update = function (delta) {
@@ -149,7 +103,7 @@ var Level = (function () {
 
             var canvas = planetRep.label.canvas;
             planetRep.label.context.clearRect(0, 0, canvas.width, canvas.height);
-            drawRect(planetRep.label.context, 0, 0, 100, 100, "rgba(0, 0, 0, 0.8)");
+            drawRect(planetRep.label.context, 0, 0, canvas.width, canvas.height, "rgba(0, 0, 0, 0.8)");
 
             var amountOfShips = planetRep.planet.amountOfShips;
 

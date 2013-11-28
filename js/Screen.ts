@@ -63,7 +63,7 @@ class Game3DScreen extends GameScreen {
 
         // Camera initialization
         this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-        this.camera.position.z = 1500;
+        this.camera.position.z = 2500;
 
         this.asset.init();
 
@@ -129,7 +129,7 @@ class Game3DScreen extends GameScreen {
         document.body.appendChild( this.container );
 
         var intro = document.createElement( 'div' );
-        intro.innerHTML = '<div id="nav"><div id="pause" title="pause game"></div><div id="reset" title="reset game"></div></div><div id="intro"><button>start</button></div>'
+        intro.innerHTML = '<div id="nav"><div id="pause" title="pause game"></div><div id="reset" title="reset game"></div></div><div id="intro"><div><button>start</button><img src="img/intro.png" alt="intro" /></div></div>'
         this.container.appendChild( intro );
 
         var info = document.createElement( 'div' );
@@ -169,7 +169,7 @@ class Game3DScreen extends GameScreen {
         this.controls.zoomSpeed = 1.2;
         this.controls.panSpeed = 0.8;
 
-        this.controls.noZoom = false;   this.controls.maxDistance = 2000;   this.controls.minDistance = 25;
+        this.controls.noZoom = false;   this.controls.maxDistance = 2500;   this.controls.minDistance = 25;
         this.controls.noPan = true;
 
         this.controls.staticMoving = false;
@@ -236,20 +236,23 @@ class Game3DScreen extends GameScreen {
         }
     }
 
-    gameOver() {
+    gameOver(text) {
         var gameOver = document.createElement( 'div' );
         gameOver.style.textAlign = "center";
-        gameOver.innerHTML = '<h1>GAME OVER</h1>';
+        gameOver.style.marginBottom = "10px";
+        gameOver.innerHTML = text;
 
         var reset = document.getElementById("reset");
-        reset.style.position = "absolute";
-        reset.style.left = "calc(50% - 30px)";
+        reset.style.margin = "auto auto";
+        reset.style.display = "block";
 
-        var intro = document.getElementById("intro");
-        intro.style.paddingTop = "20px";
-        intro.removeChild(intro.getElementsByTagName("button")[0]);
-        intro.appendChild(gameOver);
-        intro.appendChild(reset);
+        //gameOver.appendChild(reset);
+
+        var introDiv = document.getElementById("intro").childNodes[0];
+        introDiv.removeChild(introDiv.getElementsByTagName("button")[0]);
+        var img = introDiv.getElementsByTagName("img")[0];
+        introDiv.insertBefore(gameOver, img);
+        introDiv.insertBefore(reset, img);
 
         document.getElementById("pause").click();
     }
@@ -279,14 +282,15 @@ class LevelScreen extends Game3DScreen{
         this.mouse = new THREE.Vector3();
         this.mouse.z = 1;
 
-        this.level = new Level(this, _game, this.asset);
+        //this.level = this.asset.createLevel(this, _game, 1); // new Level(this, _game, this.asset);
 
         this.aiWrapper = new AIWrapper(this, AIDifficultyType.EASY); // TODO: game difficulty parameter
-        // this.aiWrapper.setDifficulty(AIDifficultyType.SLEEPER); // for afflicted AI
     }
 
     init(){
         super.init();   console.log("LevelScreen init");
+
+        this.level = this.asset.createLevel(this, _game, 1);
 
         this.level.init();
 
@@ -377,12 +381,31 @@ class LevelScreen extends Game3DScreen{
 
         if (this.level.player.planetsOwned == 0 && this.level.player.fleetsOnWay == 0 && !this.level.gameOver) {
             this.level.gameOver = true;
-            this.gameOver();
+            this.gameOver("<h1 class='red'>Game over</h1>");
+        }
+        else if (this.level.competitor.planetsOwned == 0 && this.level.competitor.fleetsOnWay == 0 && !this.level.playerWin) {
+            this.level.playerWin = true;
+            this.gameOver("<h1 class='green'>You win</h1>");
         }
     }
 
     render(delta){
         super.render(delta);
+
+        for (var i in this.level.planets) {
+            var planet = this.level.planets[i];
+            switch(planet.rotation) {
+                case "x":
+                    planet.planetMesh.rotation.x  += 1/8192 * delta;
+                    break;
+                case "y":
+                    planet.planetMesh.rotation.y  += 1/8192 * delta;
+                    break;
+                case "z":
+                    planet.planetMesh.rotation.z  += 1/8192 * delta;
+                    break;
+            }
+        }
     }
 
     getIntersectsObjects(vector){
