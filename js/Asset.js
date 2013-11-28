@@ -107,8 +107,7 @@ var Asset = (function () {
 
         var planetMesh = new THREE.Mesh(this.getPlanetGeometry(), this.getPlanetMaterial(playerID, texture));
 
-        console.log(planetMesh.material.map);
-
+        //console.log(planetMesh.material.map);
         planetMesh.childOfPlanet = true;
 
         var glowMesh = new THREE.Mesh(this.getPlanetGeometry(), this.planetGlowMaterial[playerID]);
@@ -128,7 +127,46 @@ var Asset = (function () {
         group.id = playerID;
         group.label = spritey;
 
+        if (texture == "neptune") {
+            var ring = this.getPlanetRingMesh();
+            ring.rotation.x = Math.random() * 125;
+            ring.childOfPlanet = true;
+            group.add(ring);
+        }
+
         return group;
+    };
+
+    Asset.prototype.getPlanetRingMesh = function () {
+        var materials = [];
+
+        var ringMaterial = new THREE.MeshBasicMaterial({
+            map: THREE.ImageUtils.loadTexture('res/planets/ring.png'),
+            transparent: true,
+            alphaTest: 0.5
+        });
+
+        var blankMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.0
+        });
+
+        materials[0] = blankMaterial;
+        materials[1] = blankMaterial;
+        materials[2] = blankMaterial;
+        materials[3] = blankMaterial;
+        materials[4] = ringMaterial;
+        materials[5] = ringMaterial;
+
+        var geometry = new THREE.CubeGeometry(200, 200, 0.200, 1, 1, 1);
+
+        var squareMesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+
+        //squareMesh.position.set(1.5, 0.0, 4.0);
+        squareMesh.scale.multiplyScalar(1.2);
+
+        return squareMesh;
     };
 
     Asset.prototype.getPlanetGeometry = function () {

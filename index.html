@@ -186,6 +186,7 @@
             _game.screen.level.pathFinder.initPaths();
 //            _game.screen.level.pathFinder.drawPaths(_game.screen.scene);
 
+
             function init() {
                 stats = new Stats();
                 stats.domElement.style.position = 'absolute';
@@ -216,11 +217,15 @@
                 $("#intro button.resume").click(function() {
                     $("#intro").fadeOut(500, function() {
                         Setting.timeShift = timeShift;
+                        // pause game
+                        _game.screen.paused = true;
                     });
                 });
                 $("#intro button").click(function() {
                     $("#intro").fadeOut(500, function() {
                         Setting.timeShift = 1;
+                        // unpause game
+                        _game.screen.paused = false;
                         // start AI brain
                         _game.screen.aiWrapper.AIRun();
                     });
@@ -228,6 +233,9 @@
                 $("#pause").click(function() {
                     timeShift = Setting.timeShift;
                     Setting.timeShift = 0;
+                    // pause game
+                    _game.screen.paused = true;
+
                     $("#intro button").addClass("resume");
                     $("#intro button").text("resume");
                     $("#intro").fadeIn();

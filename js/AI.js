@@ -17,8 +17,8 @@ var Move = (function () {
 var AIDifficultyType;
 (function (AIDifficultyType) {
     AIDifficultyType[AIDifficultyType["SLEEPER"] = 0] = "SLEEPER";
-    AIDifficultyType[AIDifficultyType["EASY"] = 7000] = "EASY";
-    AIDifficultyType[AIDifficultyType["MEDIUM"] = 5000] = "MEDIUM";
+    AIDifficultyType[AIDifficultyType["EASY"] = 9000] = "EASY";
+    AIDifficultyType[AIDifficultyType["MEDIUM"] = 6000] = "MEDIUM";
     AIDifficultyType[AIDifficultyType["HARD"] = 2500] = "HARD";
 })(AIDifficultyType || (AIDifficultyType = {}));
 

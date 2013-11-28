@@ -277,6 +277,7 @@ class LevelScreen extends Game3DScreen{
 
     public mouse;
     public state;
+    public paused = true;
 
     public level;
 
@@ -329,6 +330,10 @@ class LevelScreen extends Game3DScreen{
 
     onMouseDown( event ){
         this.setMouse(event);
+
+        if (this.paused) {
+            return;
+        }
 
         var intersects = this.getIntersectsObjects(this.mouse);
 

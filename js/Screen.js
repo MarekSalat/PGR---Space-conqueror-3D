@@ -257,6 +257,7 @@ var LevelScreen = (function (_super) {
     __extends(LevelScreen, _super);
     function LevelScreen() {
         _super.call(this);
+        this.paused = true;
         console.log("LevelScreen construct");
 
         this.mouse = new THREE.Vector3();
@@ -301,6 +302,10 @@ var LevelScreen = (function (_super) {
 
     LevelScreen.prototype.onMouseDown = function (event) {
         this.setMouse(event);
+
+        if (this.paused) {
+            return;
+        }
 
         var intersects = this.getIntersectsObjects(this.mouse);
 
