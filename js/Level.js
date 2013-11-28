@@ -73,14 +73,15 @@ var Level = (function () {
 
             this.fleets[i].position.copy(this.res);
 
+            this.fleets[i].lookAt(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
+
+            this.fleets[i].translateOnAxis(this.fleets[i].trans, this.fleets[i].radius);
+
             if (fleet.owner.type == GameModel.PlayerType.BOOT) {
                 this.competitor.fleetsOnWay++;
             } else if (fleet.owner.type == GameModel.PlayerType.PLAYER) {
                 this.player.fleetsOnWay++;
             }
-
-            //            this.fleets[i].lookAt( this.fleets[i].dstPositon );
-            this.fleets[i].lookAt(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
         }
     };
 
@@ -221,14 +222,23 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
 
                 fleet.dstPositon = to.position;
                 fleet.srcPositon = from.position.clone();
+
+                fleet.radius = from.radius < to.radius ? from.radius : to.radius;
+                fleet.radius /= 4;
+
                 fleet.path = this.pathFinder.getPath(from.position, to.position);
                 fleet.index = 0;
 
                 var r = from.radius / 4;
                 var d = from.radius / 2;
-                fleet.srcPositon.x += Math.random() * r - d;
-                fleet.srcPositon.y += Math.random() * r - d;
-                fleet.srcPositon.z += Math.random() * r - d;
+                var x = Math.random() * d - r;
+                var y = Math.random() * d - r;
+                var z = Math.random() * d - r;
+
+                fleet.trans = new THREE.Vector3(x, y, z).normalize();
+                console.log(fleet.radius);
+
+                fleet.translateOnAxis(fleet.trans, fleet.radius);
 
                 fleet.fleet = fleets[f];
                 this.screen.scene.add(fleet);

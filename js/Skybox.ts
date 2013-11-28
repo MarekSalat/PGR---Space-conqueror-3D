@@ -19,7 +19,7 @@ class Skybox {
         var path = "res/skybox/";
         var file = 'out';
         var format = '.png';
-        var array = Skybox.randArray();
+//        var array = Skybox.randArray();
 
 //        var urls = [
 //            path + 'Universe2' + format, path + 'Universe2' + format,
@@ -27,10 +27,16 @@ class Skybox {
 //            path + 'Universe2' + format, path + 'Universe2' + format
 //        ];
 
+//        var urls = [
+//            path + file + array[0] + format, path + file + array[1] + format,
+//            path + file + array[2] + format, path + file + array[3] + format,
+//            path + file + array[4] + format, path + file + array[5] + format
+//        ];
+
         var urls = [
-            path + file + array[0] + format, path + file + array[1] + format,
-            path + file + array[2] + format, path + file + array[3] + format,
-            path + file + array[4] + format, path + file + array[5] + format
+            path + file + format, path + file + format,
+            path + file + format, path + file + format,
+            path + file + format, path + file + format
         ];
 
 //        console.log (urls);
@@ -59,19 +65,27 @@ class Skybox {
 
 
         file = 'in';
-        array = Skybox.randArray();
+//        array = Skybox.randArray();
+//
+//        urls = [
+//            path + file + array[0] + format, path + file + array[1] + format,
+//            path + file + array[2] + format, path + file + array[3] + format,
+//            path + file + array[4] + format, path + file + array[5] + format
+//        ];
 
-        urls = [
-            path + file + array[0] + format, path + file + array[1] + format,
-            path + file + array[2] + format, path + file + array[3] + format,
-            path + file + array[4] + format, path + file + array[5] + format
-        ];
+
 
 //        urls = [
 //            path + 'Universe3' + format, path + 'Universe3' + format,
 //            path + 'Universe3' + format, path + 'Universe3' + format,
 //            path + 'Universe3' + format, path + 'Universe3' + format
 //        ];
+
+        var urls = [
+            path + file + format, path + file + format,
+            path + file + format, path + file + format,
+            path + file + format, path + file + format
+        ];
 
         textureCube	= THREE.ImageUtils.loadTextureCube( urls );
 

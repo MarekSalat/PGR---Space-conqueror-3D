@@ -166,7 +166,7 @@ class Asset {
 
 
         var spritey = makeTextSprite( "0000",
-            { fontsize: 250, borderColor: {r:0, g:0, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:0.8} } );
+            { fontsize: 30, borderColor: {r:0, g:0, b:0, a:1.0}, backgroundColor: {r:0, g:0, b:0, a:0.8} } );
         spritey.position.set(0,0,0);
         spritey.childOfPlanet = true;
         group.add( spritey );
@@ -330,8 +330,8 @@ function makeTextSprite( message, parameters )
     // get size data (height depends only on font size)
     var metrics = context.measureText( message );
     var textWidth  = metrics.width ;
-    canvas.width = textWidth + 100;
-    canvas.height = fontsize + 100;
+    canvas.width = textWidth;
+    canvas.height = fontsize;
 
     var context = canvas.getContext('2d');
     context.font = "Bold " + fontsize + "px " + fontface;

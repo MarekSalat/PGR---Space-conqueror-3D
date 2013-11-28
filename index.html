@@ -44,6 +44,14 @@
             color: #00D705;
         }
 
+        .blue {
+            color: #3498db;
+        }
+
+        .alpha {
+            font-size: 200%;
+        }
+
         #nav {
             position: absolute;
             top: 5px;
@@ -123,6 +131,17 @@
 
 
     </style>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-46065171-1', 'vutbr.cz');
+        ga('send', 'pageview');
+    </script>
+
 </head>
     <body>
         <script src="js/libs/jquery-1.10.2.min.js"></script>
@@ -165,7 +184,7 @@
 
 //            console.log(_game.screen.level);
             _game.screen.level.pathFinder.initPaths();
-            _game.screen.level.pathFinder.drawPaths(_game.screen.scene);
+//            _game.screen.level.pathFinder.drawPaths(_game.screen.scene);
 
             function init() {
                 stats = new Stats();
