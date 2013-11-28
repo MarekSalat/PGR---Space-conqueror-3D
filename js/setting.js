@@ -27,7 +27,7 @@ var Setting = {
         // @var new ships created per second
         default_newShipsPerSecond: 10,
         default_amountOfShips: 10,
-        generatingSpeed: 0.3,
+        generatingSpeed: 0.8,
         maximumAmountOfShips: 999,
         // @var how many of ships will take off on one move from this planet in hold
         takeoffInPercent: 0.5,
@@ -38,7 +38,7 @@ var Setting = {
         speed: 0.2
     },
     AI: {
-        status: 7000
+        status: 9000
     }
 };
 

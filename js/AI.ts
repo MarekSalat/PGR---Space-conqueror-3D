@@ -15,8 +15,8 @@ class Move {
 
 enum AIDifficultyType {
     SLEEPER = 0,
-    EASY = 7000,
-    MEDIUM = 5000,
+    EASY = 9000,
+    MEDIUM = 6000,
     HARD = 2500
 }
 
