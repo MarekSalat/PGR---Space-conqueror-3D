@@ -191,7 +191,7 @@ var GameModel;
                 fleet.capacity = fleetCapacity;
                 fleet.timeToArrive = flyTimeInMillis;
                 fleet.flyTime = flyTimeInMillis;
-                fleet.timeToStart = -Math.random() * 500;
+                fleet.timeToStart = -Math.random() * 200;
 
                 fleets.push(fleet);
             }

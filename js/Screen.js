@@ -120,6 +120,19 @@ else
         info.style.backgroundColor = '#000';
         info.innerHTML = '<a href="http://www.facebook.com/" target="_blank"><img src="img/fb_logo.png" alt="fb" /></a><h5><a href="http://threejs.org" target="_blank">three.js</a> webgl</h5> &nbsp;&nbsp; <h3>' + document.title + '</h3> &nbsp;&nbsp;&nbsp;&nbsp; <span class="credits">Marek Salát <i class="white">|</i> Michal Pracuch <i class="white">|</i> Petr Přikryl</span>';
         this.container.appendChild(info);
+
+        var alpha = document.createElement('div');
+        alpha.style.position = 'absolute';
+        alpha.style.bottom = '30px';
+        alpha.style.height = '50px';
+        alpha.style.lineHeight = '50px';
+        alpha.style.width = '180px';
+        alpha.style.backgroundColor = '#000';
+        alpha.style.textAlign = 'center';
+        alpha.style.fontSize = '120%';
+        alpha.innerHTML = '<span class = "blue alpha" >&alpha;</span> version <span class = "blue" >0.1</span>';
+        this.container.appendChild(alpha);
+
         this.container.appendChild(this.renderer.domElement);
 
         window.addEventListener('resize', (function (__this) {

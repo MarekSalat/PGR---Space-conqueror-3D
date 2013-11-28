@@ -13,14 +13,16 @@ var GUI = function(){
         var gui = new dat.GUI();
 
         gui.add(Setting, 'timeShift', 0.0001, 10);
+        gui.close();
 
-        var aiFolfer = gui.addFolder('AI');
-        aiFolfer.add(Setting.AI, 'status', { disable: AIDifficultyType.SLEEPER,
+        var aiFolder = gui.addFolder('AI');
+        aiFolder.add(Setting.AI, 'status', { disable: AIDifficultyType.SLEEPER,
             easy: AIDifficultyType.EASY,
             medium: AIDifficultyType.MEDIUM,
             hard: AIDifficultyType.HARD }).onFinishChange(function(){
                 _game.screen.aiWrapper.AIRun();
             });
+        aiFolder.open();
 
         var planetFolder = gui.addFolder('Planet');
         planetFolder.add(Setting.planet, "generatingSpeed", 0, 5);

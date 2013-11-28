@@ -166,7 +166,7 @@ module GameModel {
                 fleet.capacity = fleetCapacity;
                 fleet.timeToArrive = flyTimeInMillis;
                 fleet.flyTime = flyTimeInMillis;
-                fleet.timeToStart = -Math.random()*500; // 0-500 ms
+                fleet.timeToStart = -Math.random()*200; // 0-200 ms
 
                 fleets.push(fleet);
             }

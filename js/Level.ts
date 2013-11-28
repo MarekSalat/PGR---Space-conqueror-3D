@@ -102,6 +102,10 @@ class Level {
 
             this.fleets[i].position.copy(this.res);
 
+            this.fleets[i].lookAt(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
+
+            this.fleets[i].translateOnAxis(this.fleets[i].trans, this.fleets[i].radius);
+
 
             if (fleet.owner.type == GameModel.PlayerType.BOOT) {
                 this.competitor.fleetsOnWay++;
@@ -109,9 +113,6 @@ class Level {
             else if (fleet.owner.type == GameModel.PlayerType.PLAYER) {
                 this.player.fleetsOnWay++;
             }
-
-//            this.fleets[i].lookAt( this.fleets[i].dstPositon );
-            this.fleets[i].lookAt(this.fleets[i].path.pointsArray[this.fleets[i].index + 1]);
         }
     }
 
@@ -215,11 +216,6 @@ class Level {
             for(var i in intersectsArray){
                 var target:any = intersectsArray[i].object;
 
-
-
-//            var target:any = intersectsArray[intersectsArray.length-1-2].object;
-//            console.log("HERE");
-//            console.log(target);
                 if("planet" in target)
                 {
                     this.selectedTargetPlanet = target;
@@ -261,16 +257,25 @@ class Level {
             for(var f in fleets){
                 var fleet = this.asset.createShipMesh(from.planet.owner == this.player ? 1 : 2);
 
-                fleet.dstPositon = to.position;
+                fleet.dstPositon =  to.position;
                 fleet.srcPositon = from.position.clone();
+
+                fleet.radius = from.radius < to.radius ? from.radius : to.radius;
+                fleet.radius /= 4;
+
                 fleet.path = this.pathFinder.getPath(from.position, to.position);
                 fleet.index = 0;
 
                 var r = from.radius / 4;
                 var d = from.radius / 2;
-                fleet.srcPositon.x += Math.random()*r - d;
-                fleet.srcPositon.y += Math.random()*r - d;
-                fleet.srcPositon.z += Math.random()*r - d;
+                var x = Math.random()*d - r;
+                var y = Math.random()*d - r;
+                var z = Math.random()*d - r;
+
+                fleet.trans = new THREE.Vector3(x, y, z).normalize();
+                console.log(fleet.radius);
+
+                fleet.translateOnAxis(fleet.trans, fleet.radius);
 
                 fleet.fleet = fleets[f];
                 this.screen.scene.add(fleet);
