@@ -86,13 +86,13 @@ class PathFinder {
 
 //            console.log(intersects);
 
-//            while (i < intersects.length)
-//            {
-//                if (!(intersects[ i ].object instanceof THREE.Object3D))
-//                    i++;
-//                else
-//                    break;
-//            }
+            while (i < intersects.length)
+            {
+                if (!(intersects[ i ].object instanceof THREE.Mesh))
+                    i++;
+                else
+                    break;
+            }
 
             if (i < intersects.length && intersects[i].object.parent.position != to.position &&
                 distance > intersects[i].distance)

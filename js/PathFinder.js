@@ -58,6 +58,13 @@ var PathFinder = (function () {
             j++;
             i = 0;
 
+            while (i < intersects.length) {
+                if (!(intersects[i].object instanceof THREE.Mesh))
+                    i++;
+else
+                    break;
+            }
+
             if (i < intersects.length && intersects[i].object.parent.position != to.position && distance > intersects[i].distance) {
                 if (object == intersects[i].object.parent) {
                     same = true;
