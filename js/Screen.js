@@ -43,7 +43,7 @@ var Game3DScreen = (function (_super) {
 
         // Camera initialization
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-        this.camera.position.z = 2500;
+        this.camera.position.z = 1500;
 
         this.asset.init();
 
@@ -164,7 +164,7 @@ else
         this.controls.panSpeed = 0.8;
 
         this.controls.noZoom = false;
-        this.controls.maxDistance = 2500;
+        this.controls.maxDistance = 2200;
         this.controls.minDistance = 25;
         this.controls.noPan = true;
 

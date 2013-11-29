@@ -56,7 +56,7 @@ var Levels = {
     level_1: {
         planets: [
             {
-                x: -850,
+                x: -750,
                 y: 300,
                 z: 0,
                 radius: 3,
@@ -68,7 +68,7 @@ var Levels = {
             },
 
             {
-                x: 1100,
+                x: 900,
                 y: 0,
                 z: 150,
                 radius: 3,
@@ -83,7 +83,7 @@ var Levels = {
                 x: -280,
                 y: 10,
                 z: 100,
-                radius: 1.8,
+                radius: 1.5,
                 amountOfShips: 15,
                 newShipsPerSecond: 2,
                 owner: 0,
@@ -93,9 +93,9 @@ var Levels = {
 
             {
                 x: -390,
-                y: 400,
-                z: 700,
-                radius: 1.8,
+                y: 300,
+                z: 300,
+                radius: 1.5,
                 amountOfShips: 15,
                 newShipsPerSecond: 2,
                 owner: 0,
@@ -107,7 +107,7 @@ var Levels = {
                 x: 200,
                 y: 0,
                 z: 500,
-                radius: 1.8,
+                radius: 1.5,
                 amountOfShips: 15,
                 newShipsPerSecond: 2,
                 owner: 0,
@@ -116,10 +116,10 @@ var Levels = {
             },
 
             {
-                x: 746,
-                y: 409,
+                x: 646,
+                y: 359,
                 z: 350,
-                radius: 2,
+                radius: 1.5,
                 amountOfShips: 15,
                 newShipsPerSecond: 2,
                 owner: 0,
@@ -129,9 +129,9 @@ var Levels = {
 
             {
                 x: 600,
-                y: -450,
-                z: -400,
-                radius: 1.4,
+                y: -350,
+                z: -250,
+                radius: 1.5,
                 amountOfShips: 15,
                 newShipsPerSecond: 2,
                 owner: 0,
@@ -143,9 +143,9 @@ var Levels = {
                 x: -440,
                 y: 60,
                 z: -250,
-                radius: 1.5,
+                radius: 1,
                 amountOfShips: 10,
-                newShipsPerSecond: 1,
+                newShipsPerSecond: 1.5,
                 owner: 0,
                 texture: "neptune",
                 rotation: "x"
@@ -154,33 +154,33 @@ var Levels = {
                 x: 525,
                 y: 50,
                 z: 380,
-                radius: 1.5,
+                radius: 1,
                 amountOfShips: 10,
-                newShipsPerSecond: 1,
+                newShipsPerSecond: 1.5,
                 owner: 0,
                 texture: "neptune",
                 rotation: "x"
             },
 
             {
-                x: -450,
-                y: 550,
+                x: 350,
+                y: 305,
                 z: -440,
-                radius: 1.5,
+                radius: 1,
                 amountOfShips: 10,
-                newShipsPerSecond: 1,
+                newShipsPerSecond: 1.5,
                 owner: 0,
                 texture: "neptune",
                 rotation: "x"
             },
 
             {
-                x: -800,
-                y: 100,
-                z: 200,
-                radius: 1.5,
+                x: -600,
+                y: 50,
+                z: 350,
+                radius: 1,
                 amountOfShips: 10,
-                newShipsPerSecond: 1,
+                newShipsPerSecond: 1.5,
                 owner: 0,
                 texture: "neptune",
                 rotation: "x"
@@ -191,18 +191,6 @@ var Levels = {
                 x: 30,
                 y: 320,
                 z: -70,
-                radius: 1.8,
-                amountOfShips: 20,
-                newShipsPerSecond: 3,
-                owner: 0,
-                texture: "mars",
-                rotation: "x"
-            },
-
-            {
-                x: 990,
-                y: 50,
-                z: -100,
                 radius: 2,
                 amountOfShips: 20,
                 newShipsPerSecond: 3,
@@ -212,7 +200,19 @@ var Levels = {
             },
 
             {
-                x: 655,
+                x: 790,
+                y: 150,
+                z: -200,
+                radius: 2,
+                amountOfShips: 20,
+                newShipsPerSecond: 3,
+                owner: 0,
+                texture: "mars",
+                rotation: "x"
+            },
+
+            {
+                x: 205,
                 y: -195,
                 z: 155,
                 radius: 2,
@@ -225,8 +225,8 @@ var Levels = {
 
             {
                 x: -580,
-                y: -450,
-                z: 500,
+                y: -250,
+                z: 350,
                 radius: 2,
                 amountOfShips: 20,
                 newShipsPerSecond: 3,
@@ -237,10 +237,10 @@ var Levels = {
 
             {
                 x: -100,
-                y: -500,
-                z: -500,
+                y: -400,
+                z: -400,
                 radius: 3,
-                amountOfShips: 70,
+                amountOfShips: 50,
                 newShipsPerSecond: 4,
                 owner: 0,
                 texture: "pluto",
