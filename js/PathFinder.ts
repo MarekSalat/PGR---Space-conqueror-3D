@@ -88,7 +88,7 @@ class PathFinder {
 
             while (i < intersects.length)
             {
-                if (!(intersects[ i ].object instanceof THREE.Mesh))
+                if (!(intersects[ i ].object.geometry instanceof THREE.SphereGeometry)) //THREE.Mesh))
                     i++;
                 else
                     break;

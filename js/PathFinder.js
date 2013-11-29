@@ -59,7 +59,7 @@ var PathFinder = (function () {
             i = 0;
 
             while (i < intersects.length) {
-                if (!(intersects[i].object instanceof THREE.Mesh))
+                if (!(intersects[i].object.geometry instanceof THREE.SphereGeometry))
                     i++;
 else
                     break;
