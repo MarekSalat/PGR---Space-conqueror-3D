@@ -235,4 +235,4 @@ var Levels = {
         ]
     }
 };
-//# sourceMappingURL=setting.js.map
+//# sourceMappingURL=Setting.js.map

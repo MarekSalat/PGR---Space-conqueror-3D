@@ -86,9 +86,7 @@ var Level = (function () {
     };
 
     Level.prototype.updatePlanets = function (delta) {
-        if (this.selectedPlanets.length > 0)
-            return;
-
+        // if(this.selectedPlanets.length > 0) return;
         this.player.planetsOwned = 0;
         this.competitor.planetsOwned = 0;
 
@@ -113,12 +111,24 @@ var Level = (function () {
 
             planetRep.label.translateOnAxis(this.axis, planetRep.radius + 10);
 
-            if (planetRep.planet.owner == this.player) {
-                this.asset.setPlanetMaterial(planetRep, 1);
-            } else if (planetRep.planet.owner == this.competitor) {
-                this.asset.setPlanetMaterial(planetRep, 2);
+            if (this.selectedPlanets.indexOf(planetRep) == -1 && this.selectedTargetPlanet !== planetRep) {
+                if (planetRep.planet.owner == this.player) {
+                    this.asset.setPlanetMaterial(planetRep, 1);
+                } else if (planetRep.planet.owner == this.competitor) {
+                    this.asset.setPlanetMaterial(planetRep, 2);
+                } else {
+                    this.asset.setPlanetMaterial(planetRep, 0);
+                }
             } else {
-                this.asset.setPlanetMaterial(planetRep, 0);
+                // selected planets, but may have changed theirs owner - so let's check owner
+                var index = this.selectedPlanets.indexOf(planetRep);
+                if (~index && planetRep.planet.owner != this.player) {
+                    this.planetUnselected(planetRep);
+                    this.selectedPlanets.splice(index, 1);
+                } else if (this.selectedTargetPlanet === planetRep && planetRep.planet.owner == this.player) {
+                    this.planetUnselected(planetRep);
+                    this.selectedTargetPlanet = null;
+                }
             }
 
             if (planetRep.planet.owner.type == GameModel.PlayerType.BOOT) {
@@ -159,9 +169,15 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
     };
 
     Level.prototype.onPlanetSelected = function (planetRep) {
-        if (this.selectedTargetPlanet === planetRep || this.selectedPlanets.indexOf(planetRep) >= 0)
+        if (this.selectedTargetPlanet === planetRep) {
             return;
+        } else if (this.selectedPlanets.indexOf(planetRep) >= 0) {
+            this.planetUnselected(this.selectedTargetPlanet);
+            this.selectedTargetPlanet = null;
+            return;
+        }
 
+        console.log("planet selected");
         this.planetSelected(planetRep);
 
         if (planetRep.planet.owner != this.player) {
@@ -170,6 +186,7 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
             this.selectedTargetPlanet = planetRep;
         } else {
             this.selectedPlanets.push(planetRep);
+
             console.log('Plane ' + planetRep.planet + ' with ' + planetRep.planet.amountOfShips + ' ships');
         }
     };
@@ -192,6 +209,17 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
         }
 
         if (this.selectedTargetPlanet != null) {
+            var playerSelectedPlanets = [];
+            for (var i in this.selectedPlanets) {
+                console.log(this.selectedPlanets[i]);
+                if (this.selectedPlanets[i].planet.owner == this.player) {
+                    playerSelectedPlanets.push(this.selectedPlanets[i]);
+                } else {
+                    this.planetUnselected(this.selectedPlanets[i]);
+                }
+            }
+            this.selectedPlanets = playerSelectedPlanets;
+
             this.sendFleets(this.selectedPlanets, this.selectedTargetPlanet);
             this.planetUnselected(this.selectedTargetPlanet);
         }
@@ -236,8 +264,8 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
                 var z = Math.random() * d - r;
 
                 fleet.trans = new THREE.Vector3(x, y, z).normalize();
-                console.log(fleet.radius);
 
+                //console.log(fleet.radius);
                 fleet.translateOnAxis(fleet.trans, fleet.radius);
 
                 fleet.fleet = fleets[f];
