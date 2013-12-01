@@ -180,7 +180,7 @@ class Level {
     }
 
     onSelectionStart(intersectsArray){
-        console.log(intersectsArray);
+//        console.log(intersectsArray);
 
         var tmp = intersectsArray[0];
         if ('planet' in tmp.object && tmp.object.planet.owner == this.player)
@@ -237,7 +237,7 @@ class Level {
 
     onSelectionFinish(intersectsArray){
         console.log("onSelectionFinish intersectsArray.lenght = " + intersectsArray.length + ' target ' + this.selectedTargetPlanet);
-        console.log(intersectsArray);
+//        console.log(intersectsArray);
         if(this.selectedTargetPlanet == null && intersectsArray.length > 0){
             for(var i in intersectsArray){
                 var target:any = intersectsArray[i].object;
@@ -259,7 +259,7 @@ class Level {
 
             var playerSelectedPlanets = [];
             for (var i in this.selectedPlanets) {
-                console.log(this.selectedPlanets[i]);
+//                console.log(this.selectedPlanets[i]);
                 if (this.selectedPlanets[i].planet.owner == this.player) {
                     playerSelectedPlanets.push(this.selectedPlanets[i]);
                 }

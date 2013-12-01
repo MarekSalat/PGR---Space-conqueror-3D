@@ -43,13 +43,27 @@ var Asset = (function () {
                 __this.shiptMesh[1].add(shipGlowMesh);
                 __this.shiptMesh[1].add(new THREE.Mesh(__this.shiptGeometry, __this.shipMaterial));
 
+                console.log("ship loaded");
+            };
+        })(this));
+
+        loader.load('asset/ship4.js', (function (__this) {
+            return function (geometry) {
+                //geometry.applyMatrix( new THREE.Matrix4().makeRotationZ( Math.PI / 2 ) );
+                __this.shiptGeometry = geometry;
+                __this.shipMaterial = new THREE.MeshLambertMaterial({ color: 0x000000 });
+
+                var shipGlowMesh;
+
+                __this.shiptMesh[0] = null;
+
                 __this.shiptMesh[2] = new THREE.Object3D();
                 shipGlowMesh = new THREE.Mesh(__this.shiptGeometry, __this.createShaderMaterial(1.0, 0.5, Setting.colors.alizarin));
                 shipGlowMesh.scale.multiplyScalar(2.5);
                 __this.shiptMesh[2].add(shipGlowMesh);
                 __this.shiptMesh[2].add(new THREE.Mesh(__this.shiptGeometry, __this.shipMaterial));
 
-                console.log("ship loaded");
+                console.log("ship 2 loaded");
             };
         })(this));
     };
@@ -204,8 +218,6 @@ var Asset = (function () {
     };
 
     Asset.prototype.makePlanetUnselected = function (planet) {
-        console.log(planet);
-
         if (planet == undefined) {
             return;
         }

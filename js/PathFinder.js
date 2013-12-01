@@ -5,7 +5,6 @@ var PathFinder = (function () {
     }
     PathFinder.prototype.initPaths = function () {
         console.log("initPaths");
-        console.log(this.planets);
 
         for (var i in this.planets) {
             for (var j in this.planets) {
@@ -51,8 +50,6 @@ var PathFinder = (function () {
         var distance = Infinity;
 
         var lineVec = new THREE.Vector3();
-
-        console.log(intersects);
 
         while (from.position != to.position && radDist < dist && j < 100) {
             j++;
@@ -157,9 +154,8 @@ else
 
         points.push(to.position);
 
-        console.log(points);
-        console.log("-----------------------------------------------------------------");
-
+        //        console.log(points);
+        //        console.log("-----------------------------------------------------------------");
         return points;
     };
 

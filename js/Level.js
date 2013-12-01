@@ -140,8 +140,7 @@ var Level = (function () {
     };
 
     Level.prototype.onSelectionStart = function (intersectsArray) {
-        console.log(intersectsArray);
-
+        //        console.log(intersectsArray);
         var tmp = intersectsArray[0];
         if ('planet' in tmp.object && tmp.object.planet.owner == this.player)
             return true;
@@ -193,7 +192,7 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
 
     Level.prototype.onSelectionFinish = function (intersectsArray) {
         console.log("onSelectionFinish intersectsArray.lenght = " + intersectsArray.length + ' target ' + this.selectedTargetPlanet);
-        console.log(intersectsArray);
+
         if (this.selectedTargetPlanet == null && intersectsArray.length > 0) {
             for (var i in intersectsArray) {
                 var target = intersectsArray[i].object;
@@ -211,7 +210,6 @@ else if ('childOfPlanet' in tmp.object && tmp.object.parent.planet.owner == this
         if (this.selectedTargetPlanet != null) {
             var playerSelectedPlanets = [];
             for (var i in this.selectedPlanets) {
-                console.log(this.selectedPlanets[i]);
                 if (this.selectedPlanets[i].planet.owner == this.player) {
                     playerSelectedPlanets.push(this.selectedPlanets[i]);
                 } else {

@@ -68,7 +68,19 @@ class Asset {
                 __this.shiptMesh[1].add( shipGlowMesh );
                 __this.shiptMesh[1].add( new THREE.Mesh( __this.shiptGeometry,  __this.shipMaterial));
 
+                console.log("ship loaded");
+            }
+        })(this));
 
+        loader.load( 'asset/ship4.js', (function(__this){
+            return function ( geometry ) {
+                //geometry.applyMatrix( new THREE.Matrix4().makeRotationZ( Math.PI / 2 ) );
+                __this.shiptGeometry = geometry;
+                __this.shipMaterial = new THREE.MeshLambertMaterial( { color:  0x000000} );//0xfafafa } );
+
+                var shipGlowMesh:any;
+
+                __this.shiptMesh[0] = null ;
 
                 __this.shiptMesh[2] = new THREE.Object3D();
                 shipGlowMesh = new THREE.Mesh( __this.shiptGeometry,  __this.createShaderMaterial(1.0, 0.5, Setting.colors.alizarin))
@@ -76,8 +88,7 @@ class Asset {
                 __this.shiptMesh[2].add( shipGlowMesh );
                 __this.shiptMesh[2].add( new THREE.Mesh( __this.shiptGeometry,  __this.shipMaterial));
 
-
-                console.log("ship loaded");
+                console.log("ship 2 loaded");
             }
         })(this));
 
@@ -248,7 +259,7 @@ class Asset {
     }
 
     makePlanetUnselected(planet){
-        console.log(planet);
+//        console.log(planet);
 
         if (planet == undefined) {
             return;
